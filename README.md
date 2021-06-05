@@ -9,7 +9,7 @@ Access to abortion care in the United States.
 ### Demographic Variables
 | Variable Construct | Variable Proxy | Source | Metadata | Spatial Scale |
 | :------------------ | :-------------- | :------ | :-------- | :------------- |
-| Population | Total population of females of reproductive ages 15-49 | ACS 2014-2018 | Link to data | County, Tract |
+| Population | Total female population of reproductive age (15-49) | ACS 2014-2018 | Link to data | County, Tract |
 
 
 ### Economic Variables
