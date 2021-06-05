@@ -37,7 +37,7 @@ Access to abortion care in the United States.
 
 ### Physical Environment Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
-| :------------------ | :-------------- | :------ | :-------- | :------------- |
+| :----------------- | :------------- | :----- | :------------ | 
 | Urban/Rural Classification | Classification of areas as rural, urban or suburban using percent rurality (County) or RUCA Codes (Tract) | Kolak et al, 2021; USDA & ACS, 2014-2018 | County, Tract |
 
 
