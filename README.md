@@ -14,7 +14,7 @@ Access to abortion care in the United States.
 
 ### Economic Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
-| :------------------ | :-------------- | :------ | :-------- | :------------- |
+| :----------------- | :------------- | :----- | :------------ | 
 | Poverty | Percent of population living below the Federal Poverty Line | ACS 2014-2018 | County |
 
 ### Policy Variables
