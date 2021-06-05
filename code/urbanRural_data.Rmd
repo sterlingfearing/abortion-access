@@ -1,0 +1,37 @@
+---
+title: "Urban/rural classification"
+author: "Sterling Fearing"
+date: "5/26/2021"
+output: html_document
+---
+Goal: Load .csv files for urban/rural classifications for census tracts and counties from GeoDaCenter opiod-policy-scan. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr) # load csv from URL
+library(here) # save files starting at wd
+```
+
+```{r}
+# census tracts 
+
+urlfile = "https://raw.githubusercontent.com/GeoDaCenter/opioid-policy-scan/master/data_final/HS02_RUCA_T.csv"
+URtract <- read_csv(url(urlfile))
+
+write_csv(URtract, here("data/tractUrbanRural.csv"))
+
+```
+
+```{r}
+# counties
+
+urlfile = "https://raw.githubusercontent.com/GeoDaCenter/opioid-policy-scan/master/data_final/HS02_C.csv"
+URcounty <- read_csv(url(urlfile))
+
+write_csv(URcounty, here("data/countyUrbanRural.csv"))
+
+```
+

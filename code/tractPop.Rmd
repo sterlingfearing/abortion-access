@@ -1,0 +1,76 @@
+---
+title: "Census Tract Population: Females Ages 15-49"
+author: "Sterling Fearing"
+date: "5/26/2021"
+output: html_document
+---
+Goal: Load data from U.S. Census with female population ages 15-49 by tract. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load libraries
+library(tidycensus)
+library(tidyverse)
+
+```
+
+```{r}
+# load census tract data for female population ages 15-49
+
+# tracts are loaded by state using get_acs
+# see reference to create function for all states [here](https://walker-data.com/2017/05/tidycensus-every-tract/)
+
+us <- unique(fips_codes$state)[1:51] # generate vector of state FIPS codes
+
+# create function that iterates over each state and binds tracts
+tractPop <- reduce(
+  map(us, function(x) {
+    get_acs(geography = "tract", variables = c(pop1 = "B01001_030",
+                                               pop2 = "B01001_031",
+                                               pop3 = "B01001_032",
+                                               pop4 = "B01001_033",
+                                               pop5 = "B01001_034",
+                                               pop6 = "B01001_035",
+                                               pop7 = "B01001_036",
+                                               pop8 = "B01001_037",
+                                               pop9 = "B01001_038",
+                                               pop10 = "B01001_039"), 
+            state = x, geometry = FALSE)
+  }), 
+  rbind
+)
+```
+```{r}
+# tidy data
+
+tractPoptidy <- tractPop %>%
+  pivot_wider(names_from = variable, values_from = c(estimate, moe)) %>%
+  separate(NAME, c("tract", "county", "state"), sep = ",") # create new columns based on NAME
+
+# calculate total population for female ages 15-49 
+tractPoptidy$pop15_49 <- rowSums(tractPoptidy[ , c(5:14)], na.rm = TRUE)
+
+# split geoid to separate state FIPS from county and tract
+tractPoptidy <- tractPoptidy %>%
+  separate(GEOID, into = c('stateFIPS', 'remFIPS'), sep = 2, remove = FALSE)
+
+# split remFIPS to separate county and tract
+tractPoptidy <- tractPoptidy %>%
+  separate(remFIPS, into = c('countyFIPS', 'tractFIPS'), sep = 3, remove = TRUE)
+  
+# remove AK, HI, PR
+tractPoptidy <- tractPoptidy %>%
+  filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
+
+# select variables of interest
+tractPoptidy <- tractPoptidy %>%
+  select(GEOID, stateFIPS, countyFIPS, tractFIPS, tract, county, state, pop15_49)
+
+# save as .csv
+write_csv(tractPoptidy, "data/tractPop.csv")
+
+```
+

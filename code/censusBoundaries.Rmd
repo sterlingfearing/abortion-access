@@ -1,0 +1,113 @@
+---
+title: "Census Boundary Data"
+author: "Sterling Fearing"
+date: "5/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(sf)
+library(tidycensus)
+library(tidyverse)
+library(tigris)
+library(tidyr)
+library(here)
+```
+
+
+```{r}
+# load county boundary files 
+
+countyLines <- get_acs(geography = 'county', variables = c(anyvar = "B01001_030"),
+                    year = 2018, geometry = TRUE)
+
+# separate GEOID into state and county FIPS
+countyLines <- countyLines %>%
+  separate(GEOID, into = c('stateFIPS', 'countyFIPS'), sep = 2, remove = FALSE)
+
+# separate NAME into county and state
+countyLines <- countyLines %>%
+  separate(NAME, c("county", "state"), sep = ",")
+
+# remove AK, HI, PR
+countyLines <- countyLines %>%
+  filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
+
+# select variables of interest
+countyLines <- countyLines %>%
+  select(GEOID, stateFIPS, countyFIPS, county, state, geometry)
+
+# save as shapefile
+st_write(countyLines, "data/countyLines.shp")
+
+  
+```
+
+```{r}
+# load state boundary files
+
+stateLines <- get_acs(geography = 'state', variables = c(anyvar = "B01001_030"),
+                    year = 2018, geometry = TRUE)
+
+# rename GEOID as state FIPS
+stateLines <- stateLines %>%
+  rename(stateFIPS = GEOID)
+  
+# remove AK, HI, PR
+stateLines <- stateLines %>%
+  filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
+
+# select variables of interest
+stateLines <- stateLines %>%
+  select(stateFIPS, NAME, geometry)
+
+# rename "NAME" to state
+stateLines <- stateLines %>%
+  rename(state = NAME)
+
+# save as shapefile
+st_write(stateLines, "data/stateLines.shp")
+```
+
+```{r}
+# census tract boundaries
+# see [here](https://walker-data.com/2017/05/tidycensus-every-tract/)
+
+us <- unique(fips_codes$state)[1:51] # generate vector of state FIPS codes
+
+# create function that iterates over tracts for each state and binds 
+tractLines <- reduce(
+  map(us, function(x) {
+    get_acs(geography = "tract", variables = "DP03_0088", 
+            state = x, geometry = TRUE)
+  }), 
+  rbind
+)
+
+# split geoid to separate state FIPS from county and tract
+tractLinestidy <- tractLines %>%
+  separate(GEOID, into = c('stateFIPS', 'remFIPS'), sep = 2, remove = FALSE)
+
+# split remFIPS to separate county and tract
+tractLinestidy <- tractLinestidy %>%
+  separate(remFIPS, into = c('countyFIPS', 'tractFIPS'), sep = 3, remove = TRUE)
+  
+# remove AK, HI, PR
+tractLinestidy <- tractLinestidy %>%
+  filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
+
+# select variables of interest
+tractLinestidy <- tractLinestidy %>%
+  select(GEOID, stateFIPS, countyFIPS, tractFIPS, NAME, geometry)
+
+# save as shapefile
+st_write(tractLinestidy, "data/tractLines.shp")
+
+
+
+```
+

@@ -1,0 +1,74 @@
+---
+title: "ANSIRH Data"
+author: "Sterling Fearing"
+date: "5/6/2021"
+output: html_document
+---
+Goal: Create cleaned, geocoded data table from ANSIRH data. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries 
+```{r}
+library(tidyverse) # tidy data
+library(here) # locate files 
+library(readr) # read csv
+library(dplyr) # organize data
+```
+
+## Load and filter raw ANSIRH data
+
+```{r}
+# Load data
+import <- read_csv("data/ANSIRHraw.csv")
+
+# Clean data
+# Select clinics providing abortion and remove clinics in PR, AK, and HI
+
+clean <- import %>%
+  rename(address = Address,
+         state = State,
+         provAbortion = "Provides Abortions",
+        ) %>%
+  select(address, state, provAbortion) %>%
+  filter(provAbortion == "Provides Abortions") %>%
+  filter(state != "PR" & state != "AK" & state != "HI")
+
+# Save as new csv file
+write_csv(clean, here("data/ANSIRHclean.csv"))
+
+```
+
+When geocoding in R, several address locations were unavailable. 
+To navigate around this, load ANSIRHclean.csv to geocodio.com. This is a free site that will geocode the addresses. Once the file is loaded, there is an option to append additional fields to the dataset, select the box for "US Census Identifiers". This will add additional columns which include the state, county, and census tract FIPS codes, which will be helpful in future data analysis. Once geocoding is complete, save results as a .csv file to the data folder for this project. 
+
+# Load geocoded .csv file 
+```{r}
+# Load file
+geocoded <- read_csv("data/ANSIRHgeocoded.csv")
+
+# Clean data
+geoClean <- geocoded %>%
+  select(address, City, County, state, Latitude, Longitude, "State FIPS", "County FIPS", "Census Tract Code") %>%
+  rename(city = City,
+         county = County,
+         latitude = Latitude, 
+         longitude = Longitude,
+         stateFIPS = "State FIPS",
+         GEOID = "County FIPS",
+         tractCode = "Census Tract Code") #county FIPS is labeled GEOID because it includes both state and county FIPS, matches label in census data 
+
+
+# Save as new .csv file
+write_csv(geoClean, here("data/ANSIRH_complete.csv"))
+
+# Convert to points and save as shapefile
+clinicsSf <- st_as_sf(geoClean, coords = c("longitude", "latitude"), crs = 4326)
+
+# save as shape file 
+write_sf(clinicsSf, "data/clinicPoints.shp")
+
+```
+
