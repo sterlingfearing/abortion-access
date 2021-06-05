@@ -2,8 +2,8 @@
 Access to abortion care in the United States. 
 
 ### Geographic Boundaries
-| Variable Construct | Variable Proxy | Spatial Scale |
-| :------------------ | :-------------- | :------ | :-------- | :------------- |
+| Variable Construct | Variable Proxy | Source | Spatial Scale |
+| :----------------- | :------------- | :----- | :------------ | 
 | Geographic Boundaries | State, County, Census Tract | US Census, 2018 | State, County, Tract |
 
 ### Demographic Variables
