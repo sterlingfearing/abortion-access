@@ -11,7 +11,6 @@ Access to abortion care in the United States.
 | :----------------- | :------------- | :----- | :------------ | 
 | Population | Total female population of reproductive age (15-49) | ACS 2014-2018 | County, Tract |
 
-
 ### Economic Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
 | :----------------- | :------------- | :----- | :------------ | 
@@ -34,11 +33,15 @@ Access to abortion care in the United States.
 | Waiting Period | Waiting period in number of hours required after counseling | Guttmacher 2021 | State |
 | Parental Involvement | State requirement of parental notification and/or consent for minors | Guttmacher 2021 | State |
 
-
 ### Physical Environment Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
 | :----------------- | :------------- | :----- | :------------ | 
 | Urban/Rural Classification | Classification of areas as rural, urban or suburban using percent rurality (County) or RUCA Codes (Tract) | Kolak et al, 2021; USDA & ACS, 2014-2018 | County, Tract |
+
+### Access Variables
+| Variable Construct | Variable Proxy | Source | Spatial Scale |
+| :----------------- | :------------- | :----- | :------------ | 
+| Access to Clinics | Distance to nearest clinic | ANSIRH 2020; Kolak et. al 2020 | County, Tract |
 
 
 
