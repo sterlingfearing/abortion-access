@@ -7,8 +7,8 @@ Access to abortion care in the United States.
 | Geographic Boundaries | State, County, Census Tract | US Census, 2018 | State, County, Tract |
 
 ### Demographic Variables
-| Variable Construct | Variable Proxy | Spatial Scale |
-| :------------------ | :-------------- | :------ | :-------- | :------------- |
+| Variable Construct | Variable Proxy | Source | Spatial Scale |
+| :----------------- | :------------- | :----- | :------------ | 
 | Population | Total female population of reproductive age (15-49) | ACS 2014-2018 | County, Tract |
 
 
