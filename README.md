@@ -19,7 +19,7 @@ Access to abortion care in the United States.
 
 ### Policy Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
-| :------------------ | :-------------- | :------ | :-------- | :------------- |
+| :----------------- | :------------- | :----- | :------------ | 
 | Legislative Control | Majority political party representation in the House and Senate | NCSL 2021 | State |
 | Governor | Governor's political party affiliation | NCSL 2021 | State |
 | State Control | Legislative control and governor's party affiliation  | NCSL 2021 | State |
