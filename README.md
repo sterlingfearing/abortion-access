@@ -3,9 +3,18 @@
 This repository consolidates data, across multiple spatial scales, that is relevant to understanding the accessibility of abortion services in the United States. 
 
 ## Introduction
+It is estimated that 1-in-4 women in the United States will have an abortion by the age of forty-five. Despite the common and private nature of this procedure, abortion is a topic that has become heavily stigmatized and politicized. Since the legalization of abortion in the 1973 supreme court case Roe v. Wade, anti-abortion activists and politicians have worked to enact strict regulations on abortion, with the ultimate goal of overturning the supreme court decision. These restrictions have resulted in disparate access to abortion throughout the country.
 
+Recent events have highlighted the necessity of addressing access to abortion care. Like many issues in the United States health care system, disparities in access to abortion care were exacerbated by the COVID-19 pandemic. As part of the emergency response in March 2020, elective medical procedures were postponed throughout the country. In arguably an opportunistic motion by anti-abortion state officials, abortion was deemed an elective procedure and clinics were shut down in eight Republican states, including: Arkansas, Alabama, Iowa, Ohio, Oklahoma, Tennessee, Texas and West Virginia. In addition, the Trump Administration's election of anti-abortion Supreme Court Justices— Neil Gorsuch, Brett Kavanaugh, and Amy Coney Barrett, presents a significant threat the constitutional right to abortion secured by *Roe vs. Wade*. The anti-abortion stance of the newly appointed Supreme Court Justices could result in overturning the *Roe* decision. 
+
+In light of the shifting power dynamics in the Supreme Court and the abortion restrictions put in place during the COVID-19 pandemic, it is of utmost importance that we turn our attention towards access to abortion care. This repository provides a consolidation, and a basic analysis, of the data that is relevant to understanding access to abortion care in the United States. 
 
 ## Data Overview
+
+### Abortion Clinic Locations
+The location of abortion clinics used for this analysis are sourced from the program for Advancing New Standards In Reproductive Health (ANSIRH) at the University of California San Francisco. The 2020 database, includes information on 1,068 facilities publicly known to provide abortion in the United States. The ANSIRH data base includes only facilities that publicly advertise providing abortion care. As such, this database is representative of the locations where most people would go to seek an abortion. It is a comprehensive list of specialized and non-specialized clinics, which account for 95% of abortions provided in the United States.
+
+Access to this database can be requested [here](http://abortionfacilitydatabase.org).
 
 ### Geographic Boundaries
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
@@ -48,6 +57,9 @@ This repository consolidates data, across multiple spatial scales, that is relev
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
 | :----------------- | :------------- | :----- | :------------ | 
 | Access to Clinics | Distance to nearest clinic | ANSIRH 2020; Kolak et. al 2020 | County, Tract |
+
+## Sources
+
 
 
 
