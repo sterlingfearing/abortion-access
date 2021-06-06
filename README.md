@@ -61,9 +61,13 @@ Access to this database can be requested [here](http://abortionfacilitydatabase.
 ## Analysis 
 
 The map below shows the distance from the center of each county to the nearest abortion clinic. The steps to generate a nearest resource analysis using the data provided can be found [here](https://geodacenter.github.io/opioid-environment-toolkit/centroid-access-tutorial.html). 
+
+
 ![county access](QGISmaps/accessCounty.jpg)
 
 The following map shows the number of clinics in each county per 1,000 women of reproductive age (15-49). 
+
+
 ![clinics per capita](QGISmaps/clinicsPer1000Pop.jpg)
 
 
