@@ -2,7 +2,7 @@
 title: 'Key Determinants of Access to Abortion Care in the United States'
 author: "Sterling Fearing"
 date: "6/5/2021"
-output: html_document
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
