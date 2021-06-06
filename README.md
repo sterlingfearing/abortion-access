@@ -64,6 +64,7 @@ The map below shows the distance from the center of each county to the nearest a
 ![county access](QGISmaps/accessCounty.jpg)
 
 The following map shows the number of clinics in each county per 1,000 women of reproductive age (15-49). 
+![clinics per capita](QGISmaps/clinicsPer1000Pop.jpg)
 
 
 ## Sources
