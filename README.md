@@ -1,5 +1,11 @@
-# abortion-access
-Access to abortion care in the United States. 
+# Access to Abortion Care in the United States
+
+This repository consolidates data, across multiple spatial scales, that is relevant to understanding the accessibility of abortion services in the United States. 
+
+## Introduction
+
+
+## Data Overview
 
 ### Geographic Boundaries
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
