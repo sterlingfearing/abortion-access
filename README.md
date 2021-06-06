@@ -60,7 +60,7 @@ Access to this database can be requested [here](http://abortionfacilitydatabase.
 
 ## Analysis 
 
-The map below shows the distance from the center of each county to the nearest abortion clinic. This nearest resource analysis was generated using this [tutorial](https://geodacenter.github.io/opioid-environment-toolkit/centroid-access-tutorial.html). The map was created in QGIS. 
+The map below shows the distance from the center of each county to the nearest abortion clinic. The steps to generate a nearest resource analysis using the data provided can be found [here](https://geodacenter.github.io/opioid-environment-toolkit/centroid-access-tutorial.html). 
 ![county access](QGISmaps/accessCounty.jpg)
 
 ## Sources
