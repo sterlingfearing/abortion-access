@@ -1,6 +1,6 @@
 # Access to Abortion Care in the United States
 
-This repository consolidates data, across multiple spatial scales, that is relevant to understanding the accessibility of abortion services in the United States. 
+This repository provides a consolidation and analysis of data that is relevant to understanding the accessibility of abortion services in the United States.  
 
 ## Introduction
 It is estimated that 1-in-4 women in the United States will have an abortion by the age of forty-five. Despite the common and private nature of this procedure, abortion is a topic that has become heavily stigmatized and politicized. Since the legalization of abortion in the 1973 supreme court case Roe v. Wade, anti-abortion activists and politicians have worked to enact strict regulations on abortion, with the ultimate goal of overturning the supreme court decision. These restrictions have resulted in disparate access to abortion throughout the country.
@@ -57,6 +57,9 @@ Access to this database can be requested [here](http://abortionfacilitydatabase.
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
 | :----------------- | :------------- | :----- | :------------ | 
 | Access to Clinics | Distance to nearest clinic | ANSIRH 2020; Kolak et. al 2020 | County, Tract |
+
+## Analysis 
+
 
 ## Sources
 
