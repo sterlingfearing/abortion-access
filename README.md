@@ -3,7 +3,7 @@
 This repository provides a consolidation and analysis of data that is relevant to understanding the accessibility of abortion services in the United States.  
 
 ## Introduction
-It is estimated that 1-in-4 women in the United States will have an abortion by the age of forty-five. Despite the common and private nature of this procedure, abortion is a topic that has become heavily stigmatized and politicized. Since the legalization of abortion in the 1973 supreme court case Roe v. Wade, anti-abortion activists and politicians have worked to enact strict regulations on abortion, with the ultimate goal of overturning the supreme court decision. These restrictions have resulted in disparate access to abortion throughout the country.
+It is estimated that 1-in-4 women in the United States will have an abortion by the age of forty-five. Despite the common and private nature of this procedure, abortion is a topic that has become heavily stigmatized and politicized. Since the legalization of abortion in the 1973 supreme court case *Roe v. Wade*, anti-abortion activists and politicians have worked to enact strict regulations on abortion, with the ultimate goal of overturning the supreme court decision. These restrictions have resulted in disparate access to abortion throughout the country.
 
 Recent events have highlighted the necessity of addressing access to abortion care. Like many issues in the United States health care system, disparities in access to abortion care were exacerbated by the COVID-19 pandemic. As part of the emergency response in March 2020, elective medical procedures were postponed throughout the country. In arguably an opportunistic motion by anti-abortion state officials, abortion was deemed an elective procedure and clinics were shut down in eight Republican states, including: Arkansas, Alabama, Iowa, Ohio, Oklahoma, Tennessee, Texas and West Virginia. In addition, the Trump Administration's election of anti-abortion Supreme Court Justices— Neil Gorsuch, Brett Kavanaugh, and Amy Coney Barrett, presents a significant threat the constitutional right to abortion secured by *Roe vs. Wade*. The anti-abortion stance of the newly appointed Supreme Court Justices could result in overturning the *Roe* decision. 
 
@@ -62,6 +62,9 @@ Access to this database can be requested [here](http://abortionfacilitydatabase.
 
 The map below shows the distance from the center of each county to the nearest abortion clinic. The steps to generate a nearest resource analysis using the data provided can be found [here](https://geodacenter.github.io/opioid-environment-toolkit/centroid-access-tutorial.html). 
 ![county access](QGISmaps/accessCounty.jpg)
+
+The following map shows the number of clinics in each county per 1,000 women of reproductive age (15-49). 
+
 
 ## Sources
 
