@@ -1,5 +1,5 @@
 ---
-title: 'Literature Review: Key Determinants for Access to Abortion'
+title: 'Key Determinants of Access to Abortion Care in the United States'
 author: "Sterling Fearing"
 date: "6/5/2021"
 output: html_document
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This report aims to provide a comprehensive understanding of access to abortion care in the United States by analyzing variables identified in existing research as key determinants of access. The factors identified include: politics, law, cost, and geography.
 
-# Access Metrics
+
 
 ![](images/concept_data.jpeg)
 
