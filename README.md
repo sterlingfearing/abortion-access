@@ -58,12 +58,17 @@ Access to this database can be requested [here](http://abortionfacilitydatabase.
 | :----------------- | :------------- | :----- | :------------ | 
 | Access to Clinics | Distance to nearest clinic | ANSIRH 2020; Kolak et. al 2020 | County, Tract |
 
-## Analysis 
+## Methods Used
+The data used to generate the maps below can be found in the data folder of this repository. The scripts used to source and clean the data is available in the code folder. The final visualizations shown in the images below were created in QGIS. 
+
+## Results
 
 The map below shows the distance from the center of each county to the nearest abortion clinic. The steps to generate a nearest resource analysis using the data provided can be found [here](https://geodacenter.github.io/opioid-environment-toolkit/centroid-access-tutorial.html). 
 
 
 ![county access](QGISmaps/accessCounty.jpg)
+
+
 
 The following map shows the number of clinics in each county per 1,000 women of reproductive age (15-49). 
 
@@ -71,6 +76,12 @@ The following map shows the number of clinics in each county per 1,000 women of 
 ![clinics per capita](QGISmaps/clinicsPer1000Pop.jpg)
 
 
+## Discussion
 
+Both of the maps above seem to demonstrate greater geographic barriers to access in the mid-western region of the United States. This is particularly noticable when looking at the first map which demonstrates the distance from the center of each county to the nearest abortion clinic. The second map indicates that access to abortion clinics per capita seems to be better along the coastal regions of the United States, particularly in California and New York. 
+
+## Conclusion
+
+The goal of this report was to provide the data and documentation necessary to support further analysis of access to abortion in the United States. The exploratory data analysis shown in the maps above scratch the surface of the potential for identifying the populations in the United States that face the greatest barriers to accessing abortion care. I look forward to continuing this analysis in my future research for my MA thesis. 
 
 
