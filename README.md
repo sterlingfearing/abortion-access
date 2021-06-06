@@ -59,7 +59,7 @@ Access to this database can be requested [here](http://abortionfacilitydatabase.
 | Access to Clinics | Distance to nearest clinic | ANSIRH 2020; Kolak et. al 2020 | County, Tract |
 
 ## Analysis 
-
+![county access](QGISmaps/accessCounty.jpg)
 
 ## Sources
 
