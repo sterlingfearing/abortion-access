@@ -71,8 +71,6 @@ The following map shows the number of clinics in each county per 1,000 women of 
 ![clinics per capita](QGISmaps/clinicsPer1000Pop.jpg)
 
 
-## Sources
-
 
 
 
