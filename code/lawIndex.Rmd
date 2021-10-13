@@ -25,13 +25,13 @@ library(purrr)
 library(tidyverse)
 library(here)
 ```
+
 ```{r}
 # Load data
 
 lawRaw <- read_csv(here("./data/laws.csv"))
 
 view(lawRaw)
-
 
 ```
 
@@ -40,7 +40,7 @@ view(lawRaw)
 
 # select variables of interest
 lawSelect <- lawRaw %>%
-   select("STATE", "SECOND PHYSICIAN MUST PARTICIPATE IF AT:", "PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:", "\"PARTIAL-BIRTH\" ABORTION BANNED", "Funds All or Most Medically Necessary Abortions", "Funds Limited  to Life Endangerment, Rape and Incest", "PRIVATE INSURANCE COVERAGE LIMITED", "WAITING PERIOD (in Hours) AFTER COUNSELING", "PARENTAL INVOLVEMENT REQUIRED FOR MINORS", "In-Person Counseling Necessitates Two Trips to Clinic")
+   select("STATE", "SECOND PHYSICIAN MUST PARTICIPATE IF AT:", "PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:", "\"PARTIAL-BIRTH\" ABORTION BANNED", "Funds All or Most Medically Necessary Abortions", "Funds Limited  to Life Endangerment, Rape and Incest", "PRIVATE INSURANCE COVERAGE LIMITED", "PARENTAL INVOLVEMENT REQUIRED FOR MINORS", "In-Person Counseling Necessitates Two Trips to Clinic")
 
 # rename variables
 lawRename <- lawSelect %>%
@@ -51,71 +51,88 @@ lawRename <- lawSelect %>%
           pubFundAll = `Funds All or Most Medically Necessary Abortions`,
           pubFundLim = `Funds Limited  to Life Endangerment, Rape and Incest`,
           privLim = `PRIVATE INSURANCE COVERAGE LIMITED`,
-          wait = `WAITING PERIOD (in Hours) AFTER COUNSELING`,
           parent = `PARENTAL INVOLVEMENT REQUIRED FOR MINORS`,
           twoTrips = `In-Person Counseling Necessitates Two Trips to Clinic`)
 
-# add columns with indexed variables
+```
+
+```{r}
+
+# Create new columns with index values
    
 lawIndex <- lawRename %>%
    mutate(twoPhysI = case_when(str_detect(twoPhys, "20 weeks")~4,
                                str_detect(twoPhys, "24 weeks")~3,
                                str_detect(twoPhys, "3rd trimester")~2,
-                               str_detect(twoPhys, "Viability")~1))
-                               #str_detect(twoPhys, is.na())~0) # not working for NA values
+                               str_detect(twoPhys, "Viability")~1),
+          twoPhysI = replace_na(twoPhysI, 0)) %>%
           
                                
           
-          
-                              
-          
-   #mutate(gestLimI = case_when(str_detect(gestLim, "6 weeks")~6,
-                                     #str_detect(gestLim,"20 weeks")~5)) %>% 
-   # add new column for index, convert to numeric value for index
-   # string detect returns T of F, if T it returns, if F it skips
-   # repeat for each value
+   mutate(gestLimI = case_when(str_detect(gestLim, "6 weeks")~5,
+                               str_detect(gestLim,"20 weeks")~4,
+                               str_detect(gestLim, "24 weeks")~3,
+                               str_detect(gestLim, "3rd trimester")~2,
+                               str_detect(gestLim, "Viability")~1),
+          gestLimI = replace_na(gestLimI, 0)) %>% 
+  
+   mutate(pbBanI = case_when(str_detect(pbBan, "X")~2,
+                             str_detect(pbBan, "Postviability")~1),
+          pbBanI = replace_na(pbBanI, 0)) %>%              
    
-   # modify for exceptions/special characters
-   mutate(gestLimitIndex = gestLimitIndex+case_when(str_detect(gestLimit, "[*]")~-0.25, 
-                                                    str_detect(gestLimit, "\\N{Dagger}")~-0.5,
-                                                    str_detect(gestLimit, "\\N{Omega}")~-0.1)) %>%
-
-   select(gestLimitIndex)
+   mutate(pubFundAllI = case_when(str_detect(pubFundAll, "X")~0),
+          pubFundAllI = replace_na(pubFundAllI, 1)) %>%
    
+   mutate(pubFundLimI = case_when(str_detect(pubFundLim, "Life Only")~2,
+                                  str_detect(pubFundLim, "X")~1),
+          pubFundLimI = replace_na(pubFundLimI, 0)) %>%
+                
    
-
-
-
+   mutate(privLimI = case_when(str_detect(privLim, "X")~1),
+          privLimI = replace_na(privLimI, 0)) %>%
+   
+   mutate(parentI = case_when(str_detect(parent, "Consent and Notice")~3,
+                              str_detect(parent, "Consent")~2,
+                              str_detect(parent, "Notice")~1),
+          parentI = replace_na(parentI, 0)) %>%
+   
+   mutate(twoTripsI = case_when(str_detect(twoTrips, "X100")~3,
+                                str_detect(twoTrips, "Xany")~2,
+                                str_detect(twoTrips, "Xtele")~1,
+                                str_detect(twoTrips, "X")~4), # X at end to include other entries starting with X
+          twoTripsI = replace_na(twoTripsI, 0))
+                                
+                                 
 ```
 
 ```{r}
-# one function that serializes the data
-# take column and variables you want to check for
-dummyColumn <- list("a", "b", "c")
+# Modify values for exceptions/special characters
+   # To do: record original values not NA when no special character is present
 
-serial <- function(item) {
-    if(item == "a") {
-     return(0)
-   }
-   else if(item == "b") {
-     return(1)
-   }
-   else if(item == "c") {
-     return(2)
-   }
-    
-}
+lawIndexM <- lawIndex %>%   
+   mutate(gestLimI = gestLimI+case_when(str_detect(gestLim, "[‡]")~0.5, #life endangerment only
+                                        str_detect(gestLim, "[€]")~0.25, #temporary block on 15 week ban
+                                        str_detect(gestLim, "[†]")~-0.25, #exception:rape or incest
+                                        str_detect(gestLim, "[Ω]")~-0.25, #exception:fetal abnormality
+                                        str_detect(gestLim, "[*]")~-0.25)) %>% #exception:patient's phys health
+   
+   # To do: accommodate cases with 2 special characters, ie. "*, €" and "†, Ω"
+                                       
+                                        
+   mutate(pbBanI = pbBanI+case_when(str_detect(pbBan, "[▼]")~0.25)) %>%  #law not in effect
+   
+   mutate(pubFundLimI = pubFundLimI+case_when(str_detect(pubFundLim, "[ϴ]")~0.25, #against court order
+                                              str_detect(pubFundLim, "[*]")~-0.25, #exception:patient's phys health
+                                              str_detect(pubFundLim, "[Ω]")~-0.25)) %>% #exception:fetal abnormality
+   
+   mutate(parentI = parentI+case_when(str_detect(parent, "[▼]")~0.25, #law not in effect
+                                      str_detect(parent, "[ξ]")~-0.25, #may be waived
+                                      str_detect(parent, "[β]")~-0.25)) %>% #under age 16
 
-# run serial for each item in column and print list with new values
-score <- function(column) {
-  scoreCol <- map(column, serial)
-print(scoreCol)
-}
-
-score(dummyColumn)
-
-#second function that sums values for each state
-
+   mutate(twoTripsI = twoTripsI+case_when(str_detect(twoTrips, "[▼]")~0.25))
+   
 ```
+
+
 
 
