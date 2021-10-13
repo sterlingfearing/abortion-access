@@ -5,14 +5,87 @@ date: "9/19/2021"
 output: html_document
 ---
 
+The data used for the Abortion Law Index is sourced from the Guttmacher Institute. The link to for online table can be found [here](https://www.guttmacher.org/state-policy/explore/overview-abortion-laws). This data was sourced on August 12, 2021. The table was copied into Microsoft excel and saved as a csv file. 
+
+The gestational limit for Texas was changed to 6 weeks to reflect the new abortion law which took effect in September 2021. The bill bans abortions if an ultrasound detects what lawmakers have defined as a "fetal heartbeat", which can occur as early as 6 weeks LMP (last menstrual period). Medical experts argue that this term is misleading because a heart is not present in the embryo at this stage in development. 
+
+An additional variable that identifies the states where in-person counseling laws necessitate two trips to the clinic was added to the Overview of State Abortion Law Table. This data can be found [here](https://www.guttmacher.org/state-policy/explore/counseling-and-waiting-periods-abortion). The special characters used in the column were converted in Microsoft Excel to avoid conflict with definitions provided in primary table. 
+For reference:
+ξ = X100 to represent the definition "In-person counseling is not required for patients who live more than 100 miles from an abortion provider."
+Э = Xtele and Xany for Kentucky and Utah respectively to represent the definition "In Kentucky, a patient may be able to use telemedicine for abortion counseling. In Utah, a patient may obtain abortion counseling in person at any medical office in the state."
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
 # Load libraries
-
 library(purrr)
+library(tidyverse)
+library(here)
+```
+```{r}
+# Load data
+
+lawRaw <- read_csv(here("./data/laws.csv"))
+
+view(lawRaw)
+
+
+```
+
+```{r}
+# Clean data
+
+# select variables of interest
+lawSelect <- lawRaw %>%
+   select("STATE", "SECOND PHYSICIAN MUST PARTICIPATE IF AT:", "PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:", "\"PARTIAL-BIRTH\" ABORTION BANNED", "Funds All or Most Medically Necessary Abortions", "Funds Limited  to Life Endangerment, Rape and Incest", "PRIVATE INSURANCE COVERAGE LIMITED", "WAITING PERIOD (in Hours) AFTER COUNSELING", "PARENTAL INVOLVEMENT REQUIRED FOR MINORS", "In-Person Counseling Necessitates Two Trips to Clinic")
+
+# rename variables
+lawRename <- lawSelect %>%
+   rename(state = `STATE`,
+          twoPhys = `SECOND PHYSICIAN MUST PARTICIPATE IF AT:`,
+          gestLim = `PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:`,
+          pbBan = `\"PARTIAL-BIRTH\" ABORTION BANNED`,
+          pubFundAll = `Funds All or Most Medically Necessary Abortions`,
+          pubFundLim = `Funds Limited  to Life Endangerment, Rape and Incest`,
+          privLim = `PRIVATE INSURANCE COVERAGE LIMITED`,
+          wait = `WAITING PERIOD (in Hours) AFTER COUNSELING`,
+          parent = `PARENTAL INVOLVEMENT REQUIRED FOR MINORS`,
+          twoTrips = `In-Person Counseling Necessitates Two Trips to Clinic`)
+
+# add columns with indexed variables
+   
+lawIndex <- lawRename %>%
+   mutate(twoPhysI = case_when(str_detect(twoPhys, "20 weeks")~4,
+                               str_detect(twoPhys, "24 weeks")~3,
+                               str_detect(twoPhys, "3rd trimester")~2,
+                               str_detect(twoPhys, "Viability")~1))
+                               #str_detect(twoPhys, is.na())~0) # not working for NA values
+          
+                               
+          
+          
+                              
+          
+   #mutate(gestLimI = case_when(str_detect(gestLim, "6 weeks")~6,
+                                     #str_detect(gestLim,"20 weeks")~5)) %>% 
+   # add new column for index, convert to numeric value for index
+   # string detect returns T of F, if T it returns, if F it skips
+   # repeat for each value
+   
+   # modify for exceptions/special characters
+   mutate(gestLimitIndex = gestLimitIndex+case_when(str_detect(gestLimit, "[*]")~-0.25, 
+                                                    str_detect(gestLimit, "\\N{Dagger}")~-0.5,
+                                                    str_detect(gestLimit, "\\N{Omega}")~-0.1)) %>%
+
+   select(gestLimitIndex)
+   
+   
+
+
+
 ```
 
 ```{r}
