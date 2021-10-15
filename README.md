@@ -5,7 +5,7 @@ This repository provides a consolidation and analysis of data that is relevant t
 ## Introduction
 It is estimated that 1-in-4 women in the United States will have an abortion by the age of forty-five. Despite the common and private nature of this procedure, abortion is a topic that has become heavily stigmatized and politicized. Since the legalization of abortion in the 1973 supreme court case *Roe v. Wade*, anti-abortion activists and politicians have worked to enact strict regulations on abortion, with the ultimate goal of overturning the supreme court decision. These restrictions have resulted in disparate access to abortion throughout the country.
 
-Recent events have highlighted the necessity of addressing access to abortion care. Like many issues in the United States health care system, disparities in access to abortion care were exacerbated by the COVID-19 pandemic. As part of the emergency response in March 2020, elective medical procedures were postponed throughout the country. In arguably an opportunistic motion by anti-abortion state officials, abortion was deemed an elective procedure and clinics were shut down in eight Republican states, including: Arkansas, Alabama, Iowa, Ohio, Oklahoma, Tennessee, Texas and West Virginia. In addition, the Trump Administration's election of anti-abortion Supreme Court Justices— Neil Gorsuch, Brett Kavanaugh, and Amy Coney Barrett, presents a significant threat the constitutional right to abortion secured by *Roe vs. Wade*. The anti-abortion stance of the newly appointed Supreme Court Justices could result in overturning the *Roe* decision. 
+Recent events have highlighted the necessity of addressing access to abortion care. Like many issues in the United States health care system, disparities in access to abortion care were exacerbated by the COVID-19 pandemic. As part of the emergency response in March 2020, elective medical procedures were postponed throughout the country. In arguably an opportunistic motion by anti-abortion state officials, abortion was deemed an elective procedure and clinics were shut down in eight states, including: Arkansas, Alabama, Iowa, Ohio, Oklahoma, Tennessee, Texas and West Virginia. In addition, the Trump Administration's election of anti-abortion Supreme Court Justices— Neil Gorsuch, Brett Kavanaugh, and Amy Coney Barrett, presents a significant threat the constitutional right to abortion secured by *Roe vs. Wade*. The anti-abortion stance of the newly appointed Supreme Court Justices could result in overturning the *Roe* decision. 
 
 In light of the shifting power dynamics in the Supreme Court and the abortion restrictions put in place during the COVID-19 pandemic, it is of utmost importance that we turn our attention towards access to abortion care. This repository provides a consolidation and basic analysis of the data that is relevant to understanding access to abortion services in the United States. For more information on the variable constructs selected see [here](https://github.com/sterlingfearing/abortion-access/blob/main/keyFactors.md). 
 
@@ -37,16 +37,14 @@ Access to this database can be requested [here](http://abortionfacilitydatabase.
 | Legislative Control | Majority political party representation in the House and Senate | NCSL 2021 | State |
 | Governor | Governor's political party affiliation | NCSL 2021 | State |
 | State Control | Legislative control and governor's party affiliation  | NCSL 2021 | State |
-| Physician Required | Must be performed by licensed physician | Guttmacher 2021 | State |
-| Physician Required if Surgical | Must be performed by licensed physician if surgical | Guttmacher 2021 | State |
-| Hospital Required | Time period after which procedure must be performed in a hospital | Guttmacher 2021 | State |
 | 2nd Physician Required | Time period after which a second physician must participate | Guttmacher 2021 | State |
 | Gestational Limit | Time period after which abortion is prohibited except in the cases of life or health endangerment | Guttmacher 2021 | State |
 | "Partial Birth" Abortion Banned | Definition of "partial birth" abortion varies but typically applies to method of dialation and extraction | Guttmacher 2021 | State |
-| Public Funding | State funds available for all or most medically necessary abortions | Guttmacher 2021 | State |
+| Public Funding Available | State funds available for all or most medically necessary abortions | Guttmacher 2021 | State |
+| Public Funding Limited | State funds limited to cases of life endangerment, rape, and incest | Guttmacher 2021 | State |
 | Private Insurance Coverage Limited | State limits private insurance companies from offering coverage for abortion | Guttmacher 2021 | State |
-| Waiting Period | Waiting period in number of hours required after counseling | Guttmacher 2021 | State |
 | Parental Involvement | State requirement of parental notification and/or consent for minors | Guttmacher 2021 | State |
+| Counseling | In-person counseling necessitates two trips to the clinic | Guttmacher 2021 | State |
 
 ### Physical Environment Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
