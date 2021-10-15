@@ -20,17 +20,47 @@ library(tidyr)
 library(here)
 
 ```
-
-
 ```{r}
 # explore variables
+
+# census_api_key("key", install = TRUE)
 
 sVarNames <- load_variables(2018, "acs5/subject", cache = TRUE)
 pVarNames <- load_variables(2018, "acs5/profile", cache = TRUE)
 otherVarNames <- load_variables(2018, "acs5", cache = TRUE)
 
 head(pVarNames)
+
 ```
+
+```{r}
+
+## identify variables from B02001: RACE table
+#  1. Total Population  B02001_001 Estimate!!Total	
+#  2. Race : White      B02001_002 Estimate!!Total!!White alone	
+#  3. Race : Black      B02001_003 Estimate!!Total!!Black or African American alone	
+#  4. Race : AmInd      B02001_004 Estimate!!Total!!American Indian and Alaska Native alone	
+#  5. Race : Asian      B02001_005 Estimate!!Total!!Asian alone	
+#  6. Race : PacificIs  B02001_006 Estimate!!Total!!Native Hawaiian and Other Pacific Islander alone	
+
+## identify variables from B03002: HISPANIC OR LATINO ORIGIN BY RACE
+#  1. Ethi : Hispanic   B03003_003 Estimate!!Total!!Hispanic or Latino	B03003_001 total pop
+
+## identify variables from B01001 : AGE & SEX table
+#  1. Female  : Age 15-17  B01001_030 Estimate!!Total!!Female!!15 to 17 years
+#  2. Female  : Age 18-19  B01001_031 Estimate!!Total!!Female!!18 and 19 years
+#  3. Female  : Age 20     B01001_032 Estimate!!Total!!Female!!20 years
+#  4. Female  : Age 21     B01001_033 Estimate!!Total!!Female!!21 years
+#  5. Female  : Age 22-24  B01001_034 Estimate!!Total!!Female!!22 to 24 years
+#  6. Female  : Age 25-29  B01001_035 Estimate!!Total!!Female!!25 to 29 years
+#  7. Female  : Age 30-34  B01001_036 Estimate!!Total!!Female!!30 to 34 years
+#  8. Female  : Age 35-39  B01001_037 Estimate!!Total!!Female!!35 to 39 years
+#  9. Female  : Age 40-44  B01001_038 Estimate!!Total!!Female!!40 to 44 years
+# 10. Female  : Age 45-49  B01001_039 Estimate!!Total!!Female!!45 to 49 years
+
+
+```
+
 ```{r}
 
 # load population 15-49
@@ -58,11 +88,12 @@ countyDf <- get_acs(geography = 'county', variables = c(pop1 = "B01001_030",
                     year = 2018, geometry = FALSE)
 
 ```
+
 ```{r}
 # tidy data
 
 # create one column for each variable, separate state and county
-countyDftidy <- countyData %>%
+countyDftidy <- countyDf %>%
   pivot_wider(names_from = variable, values_from = c(estimate, moe)) %>%
   separate(NAME, c("county", "state"), sep = ",")
 
