@@ -24,12 +24,14 @@ Access to this database can be requested [here](http://abortionfacilitydatabase.
 ### Demographic Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
 | :----------------- | :------------- | :----- | :------------ | 
-| Population | Total female population of reproductive age (15-49) | ACS 2014-2018 | County, Tract |
+| Population age 15-49| Total female population of reproductive age | ACS 2014-2018 | County |
+| Race & Ethnicity | Percentages of population defined by categories of race and ethnicity | ACS 2014-2018 | County |
 
 ### Economic Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
 | :----------------- | :------------- | :----- | :------------ | 
 | Poverty | Percent of population living below the Federal Poverty Line | ACS 2014-2018 | County |
+| Per Capita Income | Per capita income in the past 12 months | ACS 2014-2018 | County |
 
 ### Policy Variables
 | Variable Construct | Variable Proxy | Source | Spatial Scale |
