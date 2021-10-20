@@ -5,6 +5,8 @@ date: "5/24/2021"
 output: html_document
 ---
 
+This code will generate a data frame with the demographic variables (population ages 15-49, race) and the economic variables (poverty, per capita income). 
+Source: 2018 ACS
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -20,6 +22,7 @@ library(tidyr)
 library(here)
 
 ```
+
 ```{r}
 # explore variables
 
@@ -31,20 +34,7 @@ otherVarNames <- load_variables(2018, "acs5", cache = TRUE)
 
 head(pVarNames)
 
-```
-
-```{r}
-
-## identify variables from B02001: RACE table
-#  1. Total Population  B02001_001 Estimate!!Total	
-#  2. Race : White      B02001_002 Estimate!!Total!!White alone	
-#  3. Race : Black      B02001_003 Estimate!!Total!!Black or African American alone	
-#  4. Race : AmInd      B02001_004 Estimate!!Total!!American Indian and Alaska Native alone	
-#  5. Race : Asian      B02001_005 Estimate!!Total!!Asian alone	
-#  6. Race : PacificIs  B02001_006 Estimate!!Total!!Native Hawaiian and Other Pacific Islander alone	
-
-## identify variables from B03002: HISPANIC OR LATINO ORIGIN BY RACE
-#  1. Ethi : Hispanic   B03003_003 Estimate!!Total!!Hispanic or Latino	B03003_001 total pop
+## Demographic Variables
 
 ## identify variables from B01001 : AGE & SEX table
 #  1. Female  : Age 15-17  B01001_030 Estimate!!Total!!Female!!15 to 17 years
@@ -59,32 +49,51 @@ head(pVarNames)
 # 10. Female  : Age 45-49  B01001_039 Estimate!!Total!!Female!!45 to 49 years
 
 
+## identify variables from B02001: RACE table
+#  1. Total Population  B02001_001 Estimate!!Total	
+#  2. Race : White      B02001_002 Estimate!!Total!!White alone	
+#  3. Race : Black      B02001_003 Estimate!!Total!!Black or African American alone	
+#  4. Race : AmInd      B02001_004 Estimate!!Total!!American Indian and Alaska Native alone	
+#  5. Race : Asian      B02001_005 Estimate!!Total!!Asian alone	
+#  6. Race : PacificIs  B02001_006 Estimate!!Total!!Native Hawaiian and Other Pacific Islander alone	
+
+## identify variables from B03002: HISPANIC OR LATINO ORIGIN BY RACE
+#  1. Ethi : Hispanic   B03003_003 Estimate!!Total!!Hispanic or Latino	B03003_001 total pop
+
+
+##Economic Variables
+
+## identify variables from S1701: POVERTY STATUS IN THE PAST 12 MONTHS
+#  1. Poverty : S1701_C03_001 Estimate!!Percent below poverty level
+
+## identify variables from B19301: PER CAPITA INCOME IN THE PAST 12 MONTHS (IN 2018 INFLATION-ADJUSTED DOLLARS)
+#  1. Income : B19301_001 Estimate!!Per capita income in the past 12 months (in 2018 inflation-adjusted dollars)
+
 ```
 
+
 ```{r}
+# load variables
 
-# load population 15-49
-# B01001_030, B01001_031, B01001_032, B01001_033, B01001_034, B01001_035, B01001_036, B01001_037, B01001_038, B01001_039
-
-# female (workers) with no vehicle available. divide by total female (workers) pop
-# B08014_016/B08014_015
-
-# percent below poverty line
-# DP03_0128P
-
-countyDf <- get_acs(geography = 'county', variables = c(pop1 = "B01001_030",
-                                                        pop2 = "B01001_031",
-                                                        pop3 = "B01001_032",
-                                                        pop4 = "B01001_033",
-                                                        pop5 = "B01001_034",
-                                                        pop6 = "B01001_035",
-                                                        pop7 = "B01001_036",
-                                                        pop8 = "B01001_037",
-                                                        pop9 = "B01001_038",
-                                                        pop10 = "B01001_039",
-                                                        noCar = "B08014_016",
-                                                        workTot = "B08014_015",
-                                                        povPerc = "DP03_0128P"),
+countyDf <- get_acs(geography = 'county', variables = c(age15_17 = "B01001_030",
+                                                        age18_19 = "B01001_031",
+                                                        age20 = "B01001_032",
+                                                        age21 = "B01001_033",
+                                                        age22_24 = "B01001_034",
+                                                        age25_29 = "B01001_035",
+                                                        age30_34 = "B01001_036",
+                                                        age35_39 = "B01001_037",
+                                                        age40_44 = "B01001_038",
+                                                        age45_49 = "B01001_039",
+                                                        popTot =  "B02001_001",
+                                                        raceWhite = "B02001_002",
+                                                        raceBlack = "B02001_003",
+                                                        raceAmInd = "B02001_004",
+                                                        raceAsian = "B02001_005",
+                                                        racePacI = "B02001_006", 
+                                                        raceHisp = "B03003_003",
+                                                        pciE = "B19301_001",
+                                                        povP = "S1701_C03_001"),
                     year = 2018, geometry = FALSE)
 
 ```
@@ -93,32 +102,39 @@ countyDf <- get_acs(geography = 'county', variables = c(pop1 = "B01001_030",
 # tidy data
 
 # create one column for each variable, separate state and county
-countyDftidy <- countyDf %>%
+varDf <- countyDf %>%
   pivot_wider(names_from = variable, values_from = c(estimate, moe)) %>%
-  separate(NAME, c("county", "state"), sep = ",")
-
-# calculate total population for female ages 15-49 
-countyDftidy$pop15_49 <- rowSums(countyDftidy[ , c(4:13)], na.rm = TRUE)
-
-# calculate percent of women reporting no vehicle 
-countyDftidy$perNoCar <- countyDftidy$estimate_noCar/countyDftidy$estimate_workTot
-
-# the first two characters of GEOID are representative of state FIPS, the remaining are county FIPS
-# separate GEOID for id based on state or county
-countyDftidy <- countyDftidy %>%
+  separate(NAME, c("county", "state"), sep = ",") %>%
   separate(GEOID, into = c('stateFIPS', 'countyFIPS'), sep = 2, remove = FALSE)
+  
+
+# add pop for each age group to get pop est for age 15-49  
+varDf$age15_49 <- varDf$estimate_age15_17 + varDf$estimate_age18_19 + varDf$estimate_age20 + varDf$estimate_age21 + varDf$estimate_age21 + varDf$estimate_age22_24 + varDf$estimate_age25_29 + varDf$estimate_age30_34 + varDf$estimate_age35_39 + varDf$estimate_age40_44 + varDf$estimate_age45_49
+  
+# calculate pop percent for each race
+varDf$raceOther <-  varDf$estimate_popTot - (varDf$estimate_raceWhite + varDf$estimate_raceBlack + varDf$estimate_raceAmInd                       + varDf$estimate_raceAsian + varDf$estimate_racePacI)
+varDf$whiteP  <-  round(varDf$estimate_raceWhite*100/varDf$estimate_popTot,2) 
+varDf$blackP  <-  round(varDf$estimate_raceBlack*100/varDf$estimate_popTot,2)
+varDf$amIndP  <-  round(varDf$estimate_raceAmInd*100/varDf$estimate_popTot,2)
+varDf$asianP  <-  round(varDf$estimate_raceAsian*100/varDf$estimate_popTot,2)
+varDf$pacIsP  <-  round(varDf$estimate_racePacI*100/varDf$estimate_popTot,2)
+varDf$otherP  <-  round(varDf$raceOther*100/varDf$estimate_popTot,2)
+varDf$hispP   <-  round(varDf$estimate_raceHisp*100/varDf$estimate_popTot,2)
+  
 
 # select variables of interest 
-countyDftidy <- countyDftidy %>%
-  select(GEOID, stateFIPS, countyFIPS, county, state, estimate_povPerc, pop15_49, perNoCar) %>%
-  rename(povPerc = estimate_povPerc) 
+countyData <- varDf %>%
+  select(GEOID, stateFIPS, countyFIPS, estimate_popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, estimate_povP, estimate_pciE) %>%
+  rename(popTot = estimate_popTot,
+         povPerc = estimate_povP,
+         pciE = estimate_pciE) 
 
 # remove PR, AK, HI
-censusDataCounty <- countyDftidy %>%
-  filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
+#censusDataCounty <- countyDftidy %>%
+  #filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
 
 # save as csv
-write_csv(censusDataCounty, here("data/censusDataCounty.csv"))
+write_csv(countyData, here("data/censusDataCounty.csv"))
 
 ```
 

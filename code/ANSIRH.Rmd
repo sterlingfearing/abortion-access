@@ -16,13 +16,15 @@ library(tidyverse) # tidy data
 library(here) # locate files 
 library(readr) # read csv
 library(dplyr) # organize data
+library(sf) # geometries in data frame
 ```
 
 ## Load and filter raw ANSIRH data
 
 ```{r}
 # Load data
-import <- read_csv("data/ANSIRHraw.csv")
+
+import <- read_csv(here("./data/ANSIRHraw.csv"))
 
 # Clean data
 # Select clinics providing abortion and remove clinics in PR, AK, and HI
@@ -47,18 +49,19 @@ To navigate around this, load ANSIRHclean.csv to geocodio.com. This is a free si
 # Load geocoded .csv file 
 ```{r}
 # Load file
-geocoded <- read_csv("data/ANSIRHgeocoded.csv")
+geocoded <- read_csv(here("./data/ANSIRHgeocoded.csv"))
 
 # Clean data
 geoClean <- geocoded %>%
-  select(address, City, County, state, Latitude, Longitude, "State FIPS", "County FIPS", "Census Tract Code") %>%
+  select(address, City, County, state, Latitude, Longitude, "State FIPS", "County FIPS") %>%
   rename(city = City,
          county = County,
          latitude = Latitude, 
          longitude = Longitude,
          stateFIPS = "State FIPS",
-         GEOID = "County FIPS",
-         tractCode = "Census Tract Code") #county FIPS is labeled GEOID because it includes both state and county FIPS, matches label in census data 
+         GEOID = "County FIPS") 
+
+#county FIPS is labeled GEOID because it includes both state and county FIPS, matches label in census data 
 
 
 # Save as new .csv file
@@ -68,7 +71,7 @@ write_csv(geoClean, here("data/ANSIRH_complete.csv"))
 clinicsSf <- st_as_sf(geoClean, coords = c("longitude", "latitude"), crs = 4326)
 
 # save as shape file 
-write_sf(clinicsSf, "data/clinicPoints.shp")
+write_sf(clinicsSf, here("data/clinicPoints.shp"))
 
 ```
 

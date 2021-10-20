@@ -107,29 +107,45 @@ lawIndex <- lawRename %>%
 
 ```{r}
 # Modify values for exceptions/special characters
-   # To do: record original values not NA when no special character is present
 
+#lawIndexM <- lawIndex %>%   
+   #mutate(gestLimI = gestLimI+case_when(str_detect(gestLim, "[‡]")~0.5, #life endangerment only
+                                        #str_detect(gestLim, "[€]")~0.25, #temporary block on 15 week ban
+                                        #str_detect(gestLim, "[†]")~-0.25, #exception:rape or incest 
+                                        #TRUE~0)
+                              #+ case_when(str_detect(gestLim, "[*]")~-0.25,#exception:fetal abnormality
+                                          #str_detect(gestLim, "[Ω]")~-0.25, #exception:patient's phys health          
+                                       #TRUE~0)) %>% #add zero to keep gestLimI value
+   
 lawIndexM <- lawIndex %>%   
    mutate(gestLimI = gestLimI+case_when(str_detect(gestLim, "[‡]")~0.5, #life endangerment only
-                                        str_detect(gestLim, "[€]")~0.25, #temporary block on 15 week ban
-                                        str_detect(gestLim, "[†]")~-0.25, #exception:rape or incest
-                                        str_detect(gestLim, "[Ω]")~-0.25, #exception:fetal abnormality
-                                        str_detect(gestLim, "[*]")~-0.25)) %>% #exception:patient's phys health
+                                        TRUE~0)
+          +case_when(str_detect(gestLim, "[€]")~0.25, #temporary block on 15 week ban
+                                        TRUE~0)
+          +case_when(str_detect(gestLim, "[†]")~-0.25, #exception:rape or incest
+                                        TRUE~0)
+          +case_when(str_detect(gestLim, "[*]")~-0.25, #exception:fetal abnormality
+                                        TRUE~0)
+          + case_when(str_detect(gestLim, "[Ω]")~-0.25, #exception:patient's phys health
+                                       TRUE~0))  %>% # if no special characters, add zero to keep value
    
-   # To do: accommodate cases with 2 special characters, ie. "*, €" and "†, Ω"
                                        
-                                        
-   mutate(pbBanI = pbBanI+case_when(str_detect(pbBan, "[▼]")~0.25)) %>%  #law not in effect
+   mutate(pbBanI = pbBanI+case_when(str_detect(pbBan, "[▼]")~0.25,
+                                    TRUE~0)) %>%  #law not in effect
    
    mutate(pubFundLimI = pubFundLimI+case_when(str_detect(pubFundLim, "[ϴ]")~0.25, #against court order
                                               str_detect(pubFundLim, "[*]")~-0.25, #exception:patient's phys health
-                                              str_detect(pubFundLim, "[Ω]")~-0.25)) %>% #exception:fetal abnormality
+                                              TRUE~0)
+                                    + case_when(str_detect(pubFundLim, "[Ω]")~-0.25, #exception:fetal abnormality
+                                       TRUE~0)) %>% 
    
    mutate(parentI = parentI+case_when(str_detect(parent, "[▼]")~0.25, #law not in effect
                                       str_detect(parent, "[ξ]")~-0.25, #may be waived
-                                      str_detect(parent, "[β]")~-0.25)) %>% #under age 16
+                                      str_detect(parent, "[β]")~-0.25, #under age 16
+                                      TRUE~0)) %>% 
 
-   mutate(twoTripsI = twoTripsI+case_when(str_detect(twoTrips, "[▼]")~0.25))
+   mutate(twoTripsI = twoTripsI+case_when(str_detect(twoTrips, "[▼]")~0.25,
+                                          TRUE~0))
    
 ```
 
