@@ -1,0 +1,54 @@
+---
+title: "Mapping"
+author: "Sterling Fearing"
+date: "11/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load packages
+
+library(sf)
+library(raster)
+library(dplyr)
+library(spData)
+library(spDataLarge)
+library(tmap)    # for static and interactive maps
+library(leaflet) # for interactive maps
+library(ggplot2) # tidyverse data visualization package
+library(shiny) # interactive maps
+
+```
+
+
+```{r}
+
+# Load data
+
+# county boundary file
+county <- st_read("data/countyLines.shp")
+
+# state boundary file
+state <- st_read("data/stateLines.shp")
+
+```
+
+```{r}
+# map county lines
+
+# Add fill layer to county shape
+tm_shape(county) +
+  tm_fill() 
+# Add border layer to county shape
+tm_shape(county) +
+  tm_borders() 
+# Add fill and border layers to county shape
+tm_shape(county) +
+  tm_fill() +
+  tm_borders()
+```
+

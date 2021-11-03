@@ -1,0 +1,39 @@
+---
+title: "Regression Analysis"
+author: "Sterling Fearing"
+date: "11/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+## load libraries
+
+library(tidyverse)
+```
+
+```{r}
+# load cvs's
+
+urClass <- read_csv("data/countyUrbanRural.csv")
+censusData <- read_csv("data/censusDataCounty.csv")
+access <- read_csv("data/county_Access.csv")
+stateParty <- read_csv("data/stateParty.csv")
+
+# abortion laws with assigned values 
+```
+
+```{r}
+# join access and censusData
+
+join <- inner_join(
+  distinct(access, GEOID),
+  censusData,
+  by = "GEOID",
+  keep = FALSE
+)
+```
+
