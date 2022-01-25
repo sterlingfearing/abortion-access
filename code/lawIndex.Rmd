@@ -29,7 +29,7 @@ library(here)
 ```{r}
 # Load data
 
-lawRaw <- read_csv(here("./data/laws.csv"))
+lawRaw <- read_csv(here("code/data/laws.csv"))
 
 view(lawRaw)
 
@@ -150,5 +150,10 @@ lawIndexM <- lawIndex %>%
 ```
 
 
+```{r}
+## save modified index with temporary adjustment values
+
+write_csv(lawIndexM, here("code/data/tempLawIndex.csv"))
+```
 
 

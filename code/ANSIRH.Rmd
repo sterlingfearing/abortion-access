@@ -73,5 +73,6 @@ clinicsSf <- st_as_sf(geoClean, coords = c("longitude", "latitude"), crs = 4326)
 # save as shape file 
 write_sf(clinicsSf, here("data/clinicPoints.shp"))
 
+
 ```
 

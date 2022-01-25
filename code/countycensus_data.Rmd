@@ -130,11 +130,11 @@ countyData <- varDf %>%
          pciE = estimate_pciE) 
 
 # remove PR, AK, HI
-#censusDataCounty <- countyDftidy %>%
-  #filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
+censusDataCounty <- countyData %>%
+  filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
 
 # save as csv
-write_csv(countyData, here("data/censusDataCounty.csv"))
+write_csv(censusDataCounty,"data/censusDataCounty.csv")
 
 ```
 

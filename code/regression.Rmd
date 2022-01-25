@@ -20,7 +20,7 @@ library(tidyverse)
 
 urClass <- read_csv("data/countyUrbanRural.csv")
 censusData <- read_csv("data/censusDataCounty.csv")
-access <- read_csv("data/county_Access.csv")
+access <- read_csv("data/NRAcounty.csv") #nearest resource analysis
 stateParty <- read_csv("data/stateParty.csv")
 
 # abortion laws with assigned values 
@@ -30,7 +30,7 @@ stateParty <- read_csv("data/stateParty.csv")
 # join access and censusData
 
 join <- inner_join(
-  distinct(access, GEOID),
+  access,
   censusData,
   by = "GEOID",
   keep = FALSE

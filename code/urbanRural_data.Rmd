@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(readr) # load csv from URL
 library(here) # save files starting at wd
+library(dplyr)
+library(tidyverse)
 ```
 
 ```{r}
@@ -32,6 +34,23 @@ urlfile = "https://raw.githubusercontent.com/GeoDaCenter/opioid-policy-scan/mast
 URcounty <- read_csv(url(urlfile))
 
 write_csv(URcounty, here("data/countyUrbanRural.csv"))
+
+```
+
+```{r}
+# Remove AK, HI for abortion access analysis
+
+## read in csv
+URcounty <- read_csv("data/countyUrbanRural.csv")
+
+## filter out AK and HI
+df <- filter(URcounty, state != "AK")
+df2 <- filter(df, state != "HI")
+
+## save new csv
+
+write_csv(df2, here("code/data/URcounty.csv"))
+  
 
 ```
 
