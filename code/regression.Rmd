@@ -18,9 +18,11 @@ library(tidyverse)
 ```{r}
 # load cvs's
 
-urClass <- read_csv("data/countyUrbanRural.csv")
+## county level data
+urClass <- read_csv("data/URcounty.csv")
 censusData <- read_csv("data/censusDataCounty.csv")
 access <- read_csv("data/NRAcounty.csv") #nearest resource analysis
+
 stateParty <- read_csv("data/stateParty.csv")
 
 # abortion laws with assigned values 
