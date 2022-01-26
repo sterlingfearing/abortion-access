@@ -1,6 +1,5 @@
-﻿stateFIPS,state,stateAB,legCon,govCon,stateCon
+stateFIPS,state,stateAB,legCon,govCon,stateCon
 01,Alabama,AL,R,R,R
-02,Alaska,AK,R,R,R
 04,Arizona,AZ,R,R,R
 05,Arkansas,AR,R,R,R
 06,California,CA,D,D,D
@@ -9,7 +8,6 @@
 10,Delaware,DE,D,D,D
 12,Florida,FL,R,R,R
 13,Georgia,GA,R,R,R
-15,Hawaii,HI,D,D,D
 16,Idaho,ID,R,R,R
 17,Illinois,IL,D,D,D
 18,Indiana,IN,R,R,R
