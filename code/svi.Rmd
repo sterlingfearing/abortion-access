@@ -1,0 +1,61 @@
+---
+title: "Social Vulnerability Index"
+author: "Sterling Fearing"
+date: "1/27/2022"
+output: html_document
+---
+
+Goal: Load raw SVI data and clean for analysis. 
+
+Source: US Centers for Disease Control and Prevention (CDC), Agency for Toxic Substances and Disease Registry, Geospatial Research, Analysis, and Services Program. CDC Social Vulnerability Index 2018 Database. Accessed on January 27, 2022.
+
+Code resource: Opioid policy scan 
+
+Variables:
+Socioeconomic – RPL_THEME1 (SVIth1)
+Household Composition & Disability – RPL_THEME2 (SVIth2)
+Minority Status & Language – RPL_THEME3 (SVIth3)
+Housing Type & Transportation – RPL_THEME4 (SVIth4)
+Overall summary ranking - RPL_THEMES (SVIthS)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load libraries
+
+library(tidyverse)
+library(here)
+library(readr)
+```
+
+
+```{r}
+
+urlfile="https://raw.githubusercontent.com/sterlingfearing/opioid-policy-scan/master/data_raw/SVI/SVI2018_US_COUNTY.csv"
+
+mydata<-read_csv(url(urlfile))
+```
+
+```{r}
+# load raw data
+countySVI <- read.csv(here("code/data/SVI2018_US_COUNTY.csv"))
+
+## filter out AK and HI
+df <- filter(countySVI, ST_ABBR != "AK")
+df2 <- filter(df, ST_ABBR != "HI")
+
+# select ranking variables
+SVI <- df2  %>% 
+  select(FIPS, starts_with("RPL_"))
+
+names(SVI) <- c("FIPS", "SVIth1", "SVIth2", "SVIth3", "SVIth4", "SVIS")
+
+write_csv(SVI, here("code/data/countySVI.csv"))
+
+
+```
+
+
+
