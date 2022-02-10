@@ -1,0 +1,161 @@
+---
+title: "State Abortion Law Index"
+author: "Sterling Fearing"
+date: "9/19/2021"
+output: html_document
+---
+
+The data used for the Abortion Law Index is sourced from the Guttmacher Institute. The link to for online table can be found [here](https://www.guttmacher.org/state-policy/explore/overview-abortion-laws). This data was sourced on August 12, 2021. The table was copied into Microsoft excel and saved as a csv file. 
+
+The gestational limit for Texas was changed to 6 weeks to reflect the new abortion law which took effect in September 2021. The bill bans abortions if an ultrasound detects what lawmakers have defined as a "fetal heartbeat", which can occur as early as 6 weeks LMP (last menstrual period). Medical experts argue that this term is misleading because a heart is not present in the embryo at this stage in development. 
+
+An additional variable that identifies the states where in-person counseling laws necessitate two trips to the clinic was added to the Overview of State Abortion Law Table. This data can be found [here](https://www.guttmacher.org/state-policy/explore/counseling-and-waiting-periods-abortion). The special characters used in the column were converted in Microsoft Excel to avoid conflict with definitions provided in primary table. 
+For reference:
+ξ = X100 to represent the definition "In-person counseling is not required for patients who live more than 100 miles from an abortion provider."
+Э = Xtele and Xany for Kentucky and Utah respectively to represent the definition "In Kentucky, a patient may be able to use telemedicine for abortion counseling. In Utah, a patient may obtain abortion counseling in person at any medical office in the state."
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load libraries
+library(purrr)
+library(tidyverse)
+library(here)
+```
+
+```{r}
+# Load data
+
+lawRaw <- read_csv(here("code/data/laws.csv"))
+
+view(lawRaw)
+
+```
+
+```{r}
+# Clean data
+
+# select variables of interest
+lawSelect <- lawRaw %>%
+   select("STATE", "SECOND PHYSICIAN MUST PARTICIPATE IF AT:", "PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:", "\"PARTIAL-BIRTH\" ABORTION BANNED", "Funds All or Most Medically Necessary Abortions", "Funds Limited  to Life Endangerment, Rape and Incest", "PRIVATE INSURANCE COVERAGE LIMITED", "PARENTAL INVOLVEMENT REQUIRED FOR MINORS", "In-Person Counseling Necessitates Two Trips to Clinic")
+
+# rename variables
+lawRename <- lawSelect %>%
+   rename(state = `STATE`,
+          twoPhys = `SECOND PHYSICIAN MUST PARTICIPATE IF AT:`,
+          gestLim = `PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:`,
+          pbBan = `\"PARTIAL-BIRTH\" ABORTION BANNED`,
+          pubFundAll = `Funds All or Most Medically Necessary Abortions`,
+          pubFundLim = `Funds Limited  to Life Endangerment, Rape and Incest`,
+          privLim = `PRIVATE INSURANCE COVERAGE LIMITED`,
+          parent = `PARENTAL INVOLVEMENT REQUIRED FOR MINORS`,
+          twoTrips = `In-Person Counseling Necessitates Two Trips to Clinic`)
+
+```
+
+```{r}
+
+# Create new columns with index values
+   
+lawIndex <- lawRename %>%
+   mutate(twoPhysI = case_when(str_detect(twoPhys, "20 weeks")~2,
+                               str_detect(twoPhys, "24 weeks")~1,
+                               str_detect(twoPhys, "3rd trimester")~1,
+                               str_detect(twoPhys, "Viability")~1),
+          twoPhysI = replace_na(twoPhysI, 0)) %>%
+          
+                               
+          
+   mutate(gestLimI = case_when(str_detect(gestLim, "6 weeks")~3,
+                               str_detect(gestLim,"20 weeks")~2, 
+                               str_detect(gestLim, "24 weeks")~1, 
+                               str_detect(gestLim, "3rd trimester")~1, 
+                               str_detect(gestLim, "Viability")~1), 
+          gestLimI = replace_na(gestLimI, 0)) %>%
+  
+   mutate(pbBanI = case_when(str_detect(pbBan, "X")~2,
+                             str_detect(pbBan, "Postviability")~1),
+          pbBanI = replace_na(pbBanI, 0)) %>%              
+   
+   mutate(pubFundAllI = case_when(str_detect(pubFundAll, "X")~0),
+          pubFundAllI = replace_na(pubFundAllI, 1)) %>%
+   
+   mutate(pubFundLimI = case_when(str_detect(pubFundLim, "Life Only")~2,
+                                  str_detect(pubFundLim, "X")~1),
+          pubFundLimI = replace_na(pubFundLimI, 0)) %>%
+                
+   
+   mutate(privLimI = case_when(str_detect(privLim, "X")~1),
+          privLimI = replace_na(privLimI, 0)) %>%
+   
+   mutate(parentI = case_when(str_detect(parent, "Consent and Notice")~2,
+                              str_detect(parent, "Consent")~2,
+                              str_detect(parent, "Notice")~1),
+          parentI = replace_na(parentI, 0)) %>%
+   
+   mutate(twoTripsI = case_when(str_detect(twoTrips, "X100")~3,
+                                str_detect(twoTrips, "Xany")~2,
+                                str_detect(twoTrips, "Xtele")~1,
+                                str_detect(twoTrips, "X")~4), # X at end to include other entries starting with X
+          twoTripsI = replace_na(twoTripsI, 0))
+                                
+                                 
+```
+
+```{r}
+# Modify values for exceptions/special characters
+
+#lawIndexM <- lawIndex %>%   
+   #mutate(gestLimI = gestLimI+case_when(str_detect(gestLim, "[‡]")~0.5, #life endangerment only
+                                        #str_detect(gestLim, "[€]")~0.25, #temporary block on 15 week ban
+                                        #str_detect(gestLim, "[†]")~-0.25, #exception:rape or incest 
+                                        #TRUE~0)
+                              #+ case_when(str_detect(gestLim, "[*]")~-0.25,#exception:fetal abnormality
+                                          #str_detect(gestLim, "[Ω]")~-0.25, #exception:patient's phys health          
+                                       #TRUE~0)) %>% #add zero to keep gestLimI value
+   
+lawIndexM <- lawIndex %>%   
+   mutate(gestLimI = gestLimI+case_when(str_detect(gestLim, "[‡]")~0.5, #life endangerment only
+                                        TRUE~0)
+          +case_when(str_detect(gestLim, "[€]")~0.25, #temporary block on 15 week ban
+                                        TRUE~0)
+          +case_when(str_detect(gestLim, "[†]")~-0.25, #exception:rape or incest
+                                        TRUE~0)
+          +case_when(str_detect(gestLim, "[*]")~-0.25, #exception:fetal abnormality
+                                        TRUE~0)
+          + case_when(str_detect(gestLim, "[Ω]")~-0.25, #exception:patient's phys health
+                                       TRUE~0))  %>% # if no special characters, add zero to keep value
+   
+                                       
+   mutate(pbBanI = pbBanI+case_when(str_detect(pbBan, "[▼]")~0.25,
+                                    TRUE~0)) %>%  #law not in effect
+   
+   mutate(pubFundLimI = pubFundLimI+case_when(str_detect(pubFundLim, "[ϴ]")~0.25, #against court order
+                                              str_detect(pubFundLim, "[*]")~-0.25, #exception:patient's phys health
+                                              TRUE~0)
+                                    + case_when(str_detect(pubFundLim, "[Ω]")~-0.25, #exception:fetal abnormality
+                                       TRUE~0)) %>% 
+   
+   mutate(parentI = parentI+case_when(str_detect(parent, "[▼]")~0.25, #law not in effect
+                                      str_detect(parent, "[ξ]")~-0.25, #may be waived
+                                      str_detect(parent, "[β]")~-0.25, #under age 16
+                                      TRUE~0)) %>% 
+
+   mutate(twoTripsI = twoTripsI+case_when(str_detect(twoTrips, "[▼]")~0.25,
+                                          TRUE~0))
+   
+```
+
+
+```{r}
+## save modified index with temporary adjustment values
+
+write_csv(lawIndexM, here("code/data/tempLawIndex.csv"))
+```
+
+
+   
+   
