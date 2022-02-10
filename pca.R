@@ -11,5 +11,5 @@ row.names(indexActive) <- raw %>% pull(state)
 prcomp(indexActive, scale = TRUE)  %>% # pca, scale = T, standardizes ranges 
 summary()
 
-ggbiplot(prcomp(indexActive, scale = FALSE), labels = rownames(indexActive))
+ggbiplot(prcomp(indexActive, scale = TRUE), labels = rownames(indexActive))
 
