@@ -38,7 +38,7 @@ write_csv(URcounty, here("data/countyUrbanRural.csv"))
 ```
 
 ```{r}
-# Remove AK, HI for abortion access analysis
+# Remove AK, HI, PR("NA") for abortion access analysis
 
 ## read in csv
 URcounty <- read_csv("data/countyUrbanRural.csv")
@@ -50,6 +50,8 @@ df2 <- filter(df, state != "HI")
 ## save new csv
 
 write_csv(df2, here("code/data/URcounty.csv"))
+
+
   
 
 ```

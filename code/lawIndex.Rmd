@@ -61,20 +61,20 @@ lawRename <- lawSelect %>%
 # Create new columns with index values
    
 lawIndex <- lawRename %>%
-   mutate(twoPhysI = case_when(str_detect(twoPhys, "20 weeks")~4,
-                               str_detect(twoPhys, "24 weeks")~3,
-                               str_detect(twoPhys, "3rd trimester")~2,
+   mutate(twoPhysI = case_when(str_detect(twoPhys, "20 weeks")~2,
+                               str_detect(twoPhys, "24 weeks")~1,
+                               str_detect(twoPhys, "3rd trimester")~1,
                                str_detect(twoPhys, "Viability")~1),
           twoPhysI = replace_na(twoPhysI, 0)) %>%
           
                                
           
-   mutate(gestLimI = case_when(str_detect(gestLim, "6 weeks")~5,
-                               str_detect(gestLim,"20 weeks")~4,
-                               str_detect(gestLim, "24 weeks")~3,
-                               str_detect(gestLim, "3rd trimester")~2,
-                               str_detect(gestLim, "Viability")~1),
-          gestLimI = replace_na(gestLimI, 0)) %>% 
+   mutate(gestLimI = case_when(str_detect(gestLim, "6 weeks")~3,
+                               str_detect(gestLim,"20 weeks")~2, 
+                               str_detect(gestLim, "24 weeks")~1, 
+                               str_detect(gestLim, "3rd trimester")~1, 
+                               str_detect(gestLim, "Viability")~1), 
+          gestLimI = replace_na(gestLimI, 0)) %>%
   
    mutate(pbBanI = case_when(str_detect(pbBan, "X")~2,
                              str_detect(pbBan, "Postviability")~1),
@@ -91,7 +91,7 @@ lawIndex <- lawRename %>%
    mutate(privLimI = case_when(str_detect(privLim, "X")~1),
           privLimI = replace_na(privLimI, 0)) %>%
    
-   mutate(parentI = case_when(str_detect(parent, "Consent and Notice")~3,
+   mutate(parentI = case_when(str_detect(parent, "Consent and Notice")~2,
                               str_detect(parent, "Consent")~2,
                               str_detect(parent, "Notice")~1),
           parentI = replace_na(parentI, 0)) %>%
@@ -156,4 +156,19 @@ lawIndexM <- lawIndex %>%
 write_csv(lawIndexM, here("code/data/tempLawIndex.csv"))
 ```
 
+## Create Index
 
+Group variables into categories
+1. Gestational Limits
+2. Funding
+   - Public funding (all)
+   - Public funding limited
+   - Private insurance limited
+3. Medical Regulations
+   - Second Physician (if at)
+   - Partial Birth Ban
+4. Personal Restrictions
+   - Parental involvement
+   - In-person counseling req. two trips to clinic
+   
+   
