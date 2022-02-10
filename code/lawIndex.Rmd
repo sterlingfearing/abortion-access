@@ -44,7 +44,7 @@ lawSelect <- lawRaw %>%
 
 # rename variables
 lawRename <- lawSelect %>%
-   rename(state = `STATE`,
+   select(state = `STATE`,
           twoPhys = `SECOND PHYSICIAN MUST PARTICIPATE IF AT:`,
           gestLim = `PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:`,
           pbBan = `\"PARTIAL-BIRTH\" ABORTION BANNED`,
@@ -69,7 +69,7 @@ lawIndex <- lawRename %>%
           
                                
           
-   mutate(gestLimI = case_when(str_detect(gestLim, "6 weeks")~3,
+   mutate(gestLimI = case_when(str_detect(gestLim, "6 weeks")~4,
                                str_detect(gestLim,"20 weeks")~2, 
                                str_detect(gestLim, "24 weeks")~1, 
                                str_detect(gestLim, "3rd trimester")~1, 
@@ -171,4 +171,16 @@ Group variables into categories
    - Parental involvement
    - In-person counseling req. two trips to clinic
    
+```{r}
+
+indexActive <- lawIndexM[-c(1:9)] # select only indexed variables, take out states b/c character 
+row.names(indexActive) <- lawIndexM %>% pull(state)
+
+# rescale columns of a dataframe to be 0 to 1 in R tidyverse
+
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+```
    
