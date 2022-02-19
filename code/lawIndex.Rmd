@@ -172,15 +172,85 @@ Group variables into categories
    - In-person counseling req. two trips to clinic
    
 ```{r}
-
 indexActive <- lawIndexM[-c(1:9)] # select only indexed variables, take out states b/c character 
-row.names(indexActive) <- lawIndexM %>% pull(state)
+
 
 # rescale columns of a dataframe to be 0 to 1 in R tidyverse
 
+# define rescale function
 rescale01 <- function(x) {
   rng <- range(x, na.rm = TRUE)
   (x - rng[1]) / (rng[2] - rng[1])
 }
+
+
+for(i in seq_along(indexActive)) { #iterate over columns
+   indexActive[[i]] <- rescale01(indexActive[[i]])
+}
+
+row.names(indexActive) <- lawIndexM %>% pull(state)
 ```
+
+
+```{r}
+# add columns for each category
+
+indexActive <- indexActive %>%
+   mutate(funding= pubFundAllI + pubFundLimI + privLimI,
+          medical= twoPhysI + pbBanI,
+          personal= parentI + twoTripsI) %>%
+   select(gestational = gestLimI, funding, medical, personal)
+
+# rescale between 0 and 1
+
+for(i in seq_along(indexActive)) { #iterate over columns
+   indexActive[[i]] <- rescale01(indexActive[[i]])
+}
+
+# include state names 
+indexActive <- indexActive %>% 
+   mutate(state_name = pull(lawIndexM, state))
+
+```
+
+```{r}
+# create summary column
+
+indexFinal <- indexActive %>%
+   filter(!state_name %in% c("AK", "HI", "DC")) %>% # remove states
+   mutate(overall = gestational + funding + medical + personal) %>%
+   arrange(desc(overall))
    
+indexFinal %>%
+   ggplot(aes(x= overall)) +
+   geom_histogram() 
+
+# summary stats
+indexFinal %>%
+   group_by(NULL) %>%
+   summarise(mean= mean(overall),
+             sd= sd(overall),
+             count= n()
+             )
+
+# add state party
+
+stateParty <- read_csv("data/stateParty.csv")
+
+# combine data
+indexFinal %>% 
+   inner_join(stateParty, by= c("state_name" = "stateAB")) %>%
+    group_by(stateCon) %>%
+   summarise(mean= mean(overall),
+             sd= sd(overall),
+             count= n()
+             )
+
+# statistical significance? 
+# Null hypothesis is no difference. 
+
+(2.3151042 - 0.6104167)/(sqrt(0.6466908^2/20 + 0.5817762^2/14))	# denom = standard deviation
+
+# 8.028269
+```
+
