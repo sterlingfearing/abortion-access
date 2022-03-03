@@ -233,6 +233,10 @@ indexFinal %>%
              count= n()
              )
 
+# save final index
+write_csv(indexFinal, here("code/data/lawIndex.csv"))
+
+
 # add state party
 
 stateParty <- read_csv("data/stateParty.csv")

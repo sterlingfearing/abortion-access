@@ -1,0 +1,73 @@
+---
+title: "Joining Data"
+author: "Sterling Fearing"
+date: "3/1/2022"
+output: html_document
+---
+
+Goal: Consolidate data into one data frame
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+# libraries
+
+library(tidyverse)
+library(here)
+```
+
+```{r}
+
+# load data
+
+# county level variables
+census <- read_csv(here("code/data/censusDataCounty.csv"))
+SVI <- read_csv(here("code/data/countySVI2.csv"))
+URclass <- read_csv(here("code/data/URcounty2.csv"))
+NRA <- read_csv(here("code/data/NRAcounty.csv"))
+
+# state level variables
+political <- read_csv(here("code/data/stateParty.csv"))
+laws <- read_csv(here("code/data/lawIndex.csv"))
+
+```
+
+```{r}
+# join census and SVI
+
+join1 <- inner_join(census, SVI, by = "GEOID", keep = FALSE)
+
+# join UR class 
+
+join2 <- inner_join(join1, URclass, by = "GEOID", keep = FALSE)
+
+# join NRA
+
+join3 <- inner_join(join2, NRA, by = "GEOID", keep = FALSE)
+
+# join laws
+# rename column in laws
+laws <- laws %>%
+  rename(state.x = state_name)
+
+join4 <- left_join(join3, laws, by = "state.x", keep = FALSE)
+
+# join political
+
+political <- political %>%
+  rename(stateFIPS.x = stateFIPS)
+
+join5 <- left_join(join4, political, by = "stateFIPS.x", keep = FALSE)
+
+# remove repeating variables
+
+master <- join5 %>%
+  select("GEOID", "stateFIPS.x", "countyFIPS.x", "popTot", "age15_49", "whiteP", "blackP", "amIndP", "asianP", "pacIsP", "hispP", "otherP", "povPerc", "pciE", "SVIth1", "SVIth2", "SVIth3", "SVIth4", "SVIS", "rcaUrbP", "rcaRuralP", "state.x", "totPop10", "urbPop10", "rurlPop10", "cenRuralP", "county", "state.y", "minDist_mi", "gestational", "funding", "medical", "personal", "overall", "legCon", "govCon", "stateCon")
+
+# save csv
+write_csv(master, here("code/data/dataMaster.csv"))
+```
+
