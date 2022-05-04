@@ -28,7 +28,7 @@ MO,Viability,Viability,X,NA,X,X,Consent,NA,1,1,2,1,1,1,2,0
 MT,Viability,Viability*,Postviability,X,NA,NA,▼,NA,1,0.75,1,0,0,0,0.25,0
 NE,NA,20 weeks*,▼,NA,X,X,Consent,NA,0,1.75,0.25,1,1,1,2,0
 NV,NA,24 weeks,NA,NA,X,NA,▼,NA,0,1,0,1,1,0,0.25,0
-NH,NA,NA,X,NA,X,NA,Notice,NA,0,0,2,1,1,0,1,0
+NH,NA,24 weeks,X,NA,X,NA,Notice,NA,0,1,2,1,1,0,1,0
 NJ,NA,NA,▼,X,NA,NA,▼,NA,0,0,0.25,0,0,0,0.25,0
 NM,NA,NA,Postviability,X,NA,NA,▼,NA,0,0,1,0,0,0,0.25,0
 NY,NA,ViabilityΩ,NA,X,NA,NA,NA,NA,0,0.75,0,0,0,0,0,0
