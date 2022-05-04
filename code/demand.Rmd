@@ -1,0 +1,102 @@
+---
+title: "Estimated Demand"
+author: "Sterling Fearing"
+date: "4/25/2022"
+output: html_document
+---
+Goal: Measure estimated demand for abortion services on the county level using proportions provided by public health annual review for age, race, and poverty. (https://www.annualreviews.org/doi/full/10.1146/annurev.publhealth.26.021304.144351)
+
+Age: 
+15-17: 15 per 1000
+18-19: 39 per 1000
+20-24: 47 per 1000
+25-29: 32 per 1000
+30-34: 17 per 1000
+35-39: 9 per 1000
+40 and up: 3 per 1000
+
+Income:
+44 per 1000 among low-income women (below 200% of FPL)
+10 per 1000 among high income
+
+Race:
+49 per 1000 for Black women
+33 per 1000 for Hispanic women
+31 per 1000 for Asian women
+13 per 1000 for White women
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+# load libraries
+
+library(sf)
+library(tidycensus)
+library(tidyverse)
+library(tigris)
+library(tidyr)
+library(here)
+
+```
+
+
+```{r}
+# view census variables
+
+sVarNames <- load_variables(2018, "acs5/subject", cache = TRUE)
+pVarNames <- load_variables(2018, "acs5/profile", cache = TRUE)
+otherVarNames <- load_variables(2018, "acs5", cache = TRUE)
+```
+
+```{r}
+# Variables 
+
+# Age 
+## identify variables from B01001 : AGE & SEX table
+#  1. Female  : Age 15-17  B01001_030 Estimate!!Total!!Female!!15 to 17 years
+#  2. Female  : Age 18-19  B01001_031 Estimate!!Total!!Female!!18 and 19 years
+#  3. Female  : Age 20     B01001_032 Estimate!!Total!!Female!!20 years
+#  4. Female  : Age 21     B01001_033 Estimate!!Total!!Female!!21 years
+#  5. Female  : Age 22-24  B01001_034 Estimate!!Total!!Female!!22 to 24 years
+#  6. Female  : Age 25-29  B01001_035 Estimate!!Total!!Female!!25 to 29 years
+#  7. Female  : Age 30-34  B01001_036 Estimate!!Total!!Female!!30 to 34 years
+#  8. Female  : Age 35-39  B01001_037 Estimate!!Total!!Female!!35 to 39 years
+#  9. Female  : Age 40-44  B01001_038 Estimate!!Total!!Female!!40 to 44 years
+# 10. Female  : Age 45-49  B01001_039 Estimate!!Total!!Female!!45 to 49 years
+
+# Race
+## Source: County Health Rankings
+# 1. Percent Black
+# 2. Percent Asian
+# 3. Percent Hispanic
+# 4. Percent White 
+
+# Income
+# 1. Poverty : S1701_C01_042 Estimate!!Percent below 200% poverty level
+
+```
+
+```{r}
+# Get ACS data
+
+age <- get_acs(geography = 'county', variables = c(age15_17 = "B01001_030",
+                                                        age18_19 = "B01001_031",
+                                                        age20 = "B01001_032",
+                                                        age21 = "B01001_033",
+                                                        age22_24 = "B01001_034",
+                                                        age25_29 = "B01001_035",
+                                                        age30_34 = "B01001_036",
+                                                        age35_39 = "B01001_037",
+                                                        age40_44 = "B01001_038",
+                                                        age45_49 = "B01001_039",
+                                                        popTot =  "B02001_001",
+                                                        ),
+                    year = 2018, geometry = FALSE)
+
+income <- get_acs(geography = 'county', variables = c(lowincome = "S1701_C01_042")
+```
+
+
