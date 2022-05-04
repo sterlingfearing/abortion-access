@@ -75,14 +75,14 @@ otherVarNames <- load_variables(2018, "acs5", cache = TRUE)
 # 4. Percent White 
 
 # Income
-# 1. Poverty : S1701_C01_042 Estimate!!Percent below 200% poverty level
+# 1. Poverty : S1701_C01_042 Estimate!!Total below 200% poverty level
 
 ```
 
 ```{r}
 # Get ACS data
 
-age <- get_acs(geography = 'county', variables = c(age15_17 = "B01001_030",
+ACSdata <- get_acs(geography = 'county', variables = c(age15_17 = "B01001_030",
                                                         age18_19 = "B01001_031",
                                                         age20 = "B01001_032",
                                                         age21 = "B01001_033",
@@ -93,10 +93,26 @@ age <- get_acs(geography = 'county', variables = c(age15_17 = "B01001_030",
                                                         age40_44 = "B01001_038",
                                                         age45_49 = "B01001_039",
                                                         popTot =  "B02001_001",
-                                                        ),
+                                                        lowincome = "S1701_C01_042"),
                     year = 2018, geometry = FALSE)
 
-income <- get_acs(geography = 'county', variables = c(lowincome = "S1701_C01_042")
+
 ```
 
+```{r}
+# Load race data
+
+race <- read_csv(here("code", "data", "racePercent.csv"))
+```
+```{r}
+# Tidy ACS data
+# edit Arizona mistake
+
+ACSdata1 <- ACSdata %>%
+  select(-moe) %>%
+  pivot_wider(names_from = variable,
+              values_from = estimate) %>%
+  filter(!str_detect(NAME, "Hawaii|Alaska|Puerto Rico")) %>%
+  mutate(age20_24 = age20 + age21 + age22_24)
+```
 
