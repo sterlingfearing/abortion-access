@@ -1,0 +1,64 @@
+---
+title: "Community Health Rankings: Race Percent"
+author: "Sterling Fearing"
+date: "5/15/2022"
+output: html_document
+---
+
+Goal: Clean community health rankings data to access percent race in each county. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load libraries
+
+library(sf)
+library(tidycensus)
+library(tidyverse)
+library(tigris)
+library(tidyr)
+library(here)
+
+```
+
+```{r}
+# load raw data 
+
+rawCHR <- read_csv(here("code/data/healthRankRaw.csv"))
+```
+```{r}
+# select variables of interest
+
+selectRaceP <- rawCHR %>%
+  select(`State FIPS Code`, `County FIPS Code`, `5-digit FIPS Code`, `State Abbreviation`, `Name`, `% Non-Hispanic Black raw value`, `% Asian raw value`, `% Hispanic raw value`, `% Non-Hispanic White raw value`) %>%
+  rename(statecode = `State FIPS Code`, 
+         countycode = `County FIPS Code`, 
+         GEOID = `5-digit FIPS Code`, 
+         state = `State Abbreviation`, 
+         county = `Name`, 
+         blackR = `% Non-Hispanic Black raw value`, 
+         asianR = `% Asian raw value`, 
+         hispR = `% Hispanic raw value`, 
+         whiteR = `% Non-Hispanic White raw value`)
+```
+
+```{r}
+# filter selection to include counties in contiguous US
+
+filterRaceP <- selectRaceP %>%
+  filter(countycode != 0,
+         countycode != "countycode",
+         state != "AK",
+         state != "HI",
+         state != "PR")
+```
+
+```{r}
+# save csv
+
+write_csv(filterRaceP, here('code/data/racePercent.csv'))
+
+```
+
