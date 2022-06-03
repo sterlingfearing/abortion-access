@@ -32,7 +32,7 @@ rawCHR <- read_csv(here("code/data/healthRankRaw.csv"))
 # select variables of interest
 
 selectRaceP <- rawCHR %>%
-  select(`State FIPS Code`, `County FIPS Code`, `5-digit FIPS Code`, `State Abbreviation`, `Name`, `% Non-Hispanic Black raw value`, `% Asian raw value`, `% Hispanic raw value`, `% Non-Hispanic White raw value`) %>%
+  select(`State FIPS Code`, `County FIPS Code`, `5-digit FIPS Code`, `State Abbreviation`, `Name`, `% Non-Hispanic Black raw value`,`% Asian raw value`, `% Hispanic raw value`,`% Non-Hispanic White raw value`) %>%
   rename(statecode = `State FIPS Code`, 
          countycode = `County FIPS Code`, 
          GEOID = `5-digit FIPS Code`, 
@@ -54,6 +54,7 @@ filterRaceP <- selectRaceP %>%
          state != "HI",
          state != "PR")
 ```
+
 
 ```{r}
 # save csv

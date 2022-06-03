@@ -20,10 +20,12 @@ Income:
 10 per 1000 among high income
 
 Race:
-49 per 1000 for Black women
-33 per 1000 for Hispanic women
-31 per 1000 for Asian women
 13 per 1000 for White women
+49 per 1000 for Black women
+31 per 1000 for Asian/Pacific Islander women
+33 per 1000 for Hispanic women
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -41,15 +43,17 @@ library(tidyr)
 library(here)
 
 ```
-
-
 ```{r}
-# view census variables
+# load existing data sets
 
-sVarNames <- load_variables(2018, "acs5/subject", cache = TRUE)
-pVarNames <- load_variables(2018, "acs5/profile", cache = TRUE)
-otherVarNames <- load_variables(2018, "acs5", cache = TRUE)
+# race percent from Community Health Rankings
+race <- read_csv(here("code", "data", "racePercent.csv"))
+
+# cleaned census data from countycensus_data.Rmd
+census <- read_csv(here("code", "data", "censusDataCounty.csv"))
+
 ```
+
 
 ```{r}
 # Variables 
@@ -99,20 +103,73 @@ ACSdata <- get_acs(geography = 'county', variables = c(age15_17 = "B01001_030",
 
 ```
 
-```{r}
-# Load race data
 
-race <- read_csv(here("code", "data", "racePercent.csv"))
-```
+
 ```{r}
-# Tidy ACS data
-# edit Arizona mistake
+# Tidy new ACS data
 
 ACSdata1 <- ACSdata %>%
   select(-moe) %>%
   pivot_wider(names_from = variable,
               values_from = estimate) %>%
   filter(!str_detect(NAME, "Hawaii|Alaska|Puerto Rico")) %>%
-  mutate(age20_24 = age20 + age21 + age22_24)
+  mutate(age20_24 = age20 + age21 + age22_24,
+         age40_49 = age40_44 + age45_49) #create columns that match age categories
+
+```
+
+```{r}
+# select variables of interest from ACS data
+ACSdata2 <- ACSdata1 %>%
+  select(GEOID, age15_17, age18_19, age20_24, age25_29, age30_34, age35_39, age40_49, popTot, lowincome)
+
+# select variables of interest from previous censusDataCounty table
+
+census1 <- census %>%
+  select(GEOID, age15_49, povPerc, pciE)
+```
+
+```{r}
+# Join tables
+
+joinDemand <- full_join(race, ACSdata2, by= "GEOID")
+joinDemand2 <- full_join(joinDemand, census, by= "GEOID")
+
+```
+
+```{r}
+# Estimate demand by age group
+#15-17: 15 per 1000
+#18-19: 39 per 1000
+#20-24: 47 per 1000
+#25-29: 32 per 1000
+#30-34: 17 per 1000
+#35-39: 9 per 1000
+#40-49 (over 40): 4 per 1000
+
+demandAGE <- joinDemand2 %>%
+  mutate(age15_17D = (age15_17*15)/1000) %>%
+  mutate(age18_19D = (age18_19*39)/1000) %>%
+  mutate(age20_24D = (age20_24*47)/1000) %>%
+  mutate(age25_29D = (age25_29*32)/1000) %>%
+  mutate(age30_34D = (age30_34*17)/1000) %>%
+  mutate(age35_39D = (age35_39*9)/1000) %>%
+  mutate(age40_49D = (age40_49*4)/1000)
+
+# add groups to determine demand based on age in each county
+
+demandAGEadd <- demandAGE %>%
+  mutate(age15_49D = age15_17D + age18_19D + age20_24D + age25_29D + age30_34D + age35_39D + age40_49D)
+
+
+```
+
+```{r}
+# Estimate demand by race
+
+raceDemand <- demandAGEadd %>%
+  mutate()
+
+
 ```
 
