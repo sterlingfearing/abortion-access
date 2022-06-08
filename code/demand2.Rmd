@@ -1,0 +1,156 @@
+---
+title: "Estimated Demand"
+author: "Sterling Fearing"
+date: "4/25/2022"
+output: html_document
+---
+Goal: Measure estimated demand for abortion services on the county level using proportions provided by public health annual review and Guttmacher Instutute for age, race, and poverty. 
+
+References: Patterns in the Socioeconomic Characteristics of Women Obtaining Abortions (2000), Guttmacher Institute
+(See Table 1, column = Abortion Rate 2000)
+Public Health Annual Review (https://www.annualreviews.org/doi/full/10.1146/annurev.publhealth.26.021304.144351)
+
+Age: 
+15-17: 15 per 1000
+18-19: 39 per 1000
+20-24: 47 per 1000
+25-29: 32 per 1000
+30-34: 17 per 1000
+35-39: 9 per 1000
+40 and up: 3 per 1000
+
+Income: 
+~ 44 per 1000 below 100% poverty level
+~ 38 per 1000 between 100-199% poverty level
+~ 21 per 1000 above 200% poverty level
+note- census data does not provide data on pop of reproductive aged women above 300% of FPL
+
+Race:
+13 per 1000 for White women
+49 per 1000 for Black women
+31 per 1000 for Asian/Pacific Islander women
+33 per 1000 for Hispanic women
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+# load libraries
+
+library(sf)
+library(tidycensus)
+library(tidyverse)
+library(tigris)
+library(tidyr)
+library(here)
+
+```
+
+```{r}
+# load existing data sets
+
+# race percent from Community Health Rankings
+race <- read_csv(here("code", "data", "racePercent.csv"))
+
+# cleaned census data from censusData.Rmd
+ACS <- read_csv(here("code", "data", "ACSdata.csv"))
+
+```
+
+```{r}
+# select variables of interest from ACS data
+ACSdata1 <- ACS %>%
+  select(GEOID, age15_17, age18_19, age20_24, age25_29, age30_34, age35_39, age40_49, age15_49, povWtotal, povW100, povW100_199, povW200)
+
+```
+
+```{r}
+# Join tables
+
+joinD <- full_join(race, ACSdata1, by= "GEOID")
+
+```
+
+```{r}
+# Estimate demand by age group
+#15-17: 15 per 1000
+#18-19: 39 per 1000
+#20-24: 47 per 1000
+#25-29: 32 per 1000
+#30-34: 17 per 1000
+#35-39: 9 per 1000
+#40-49 (over 40): 4 per 1000
+
+demandAGE <- joinD %>%
+  mutate(age15_17D = (age15_17*15)/1000) %>%
+  mutate(age18_19D = (age18_19*39)/1000) %>%
+  mutate(age20_24D = (age20_24*47)/1000) %>%
+  mutate(age25_29D = (age25_29*32)/1000) %>%
+  mutate(age30_34D = (age30_34*17)/1000) %>%
+  mutate(age35_39D = (age35_39*9)/1000) %>%
+  mutate(age40_49D = (age40_49*4)/1000)
+
+# add groups to determine total demand in county based on age 
+
+demandAGEadd <- demandAGE %>%
+  mutate(age15_49D = age15_17D + age18_19D + age20_24D + age25_29D + age30_34D + age35_39D + age40_49D)
+
+# select variables of interest
+
+
+
+```
+
+```{r}
+# Estimate demand by race
+#13 per 1000 for White women
+#49 per 1000 for Black women
+#31 per 1000 for Asian/Pacific Islander women
+#33 per 1000 for Hispanic women
+
+estRACE <- joinD %>%
+  mutate(whiteE = age15_49*whiteR) %>%
+  mutate(blackE = age15_49*blackR) %>%
+  mutate(asianE = age15_49*asianR) %>%
+  mutate(hispE = age15_49*hispR)
+
+demandRACE <- estRACE %>%
+  mutate(whiteD = (whiteE*13)/1000) %>%
+  mutate(blackD = (blackE*49)/1000) %>%
+  mutate(asianD = (asianE*31)/1000)%>%
+  mutate(hispD = (hispE*33)/1000)
+  
+
+# add groups to determine demand based on race in each county
+
+demandRACEadd <- demandRACE %>%
+  mutate(raceD = whiteD + blackD + asianD + hispD)
+```
+
+```{r}
+# Estimate demand by income 
+
+#~ 44 per 1000 below 100% poverty level
+#~ 38 per 1000 between 100-199% poverty level
+#~ 21 per 1000 above 200% poverty level
+#note- census data does not provide data on pop of reproductive aged women above 300% of FPL
+
+demandINCOME <- joinD %>%
+  mutate(p100D = (povW100*44)/1000) %>%
+  mutate(p100_199D = (povW100_199*38)/1000) %>%
+  mutate(p200D = (povW200*21)/1000)
+
+demandINCOMEadd <- demandINCOME %>%
+  mutate(incomeD = p100D + p100_199D + p200D)
+```
+
+```{r}
+# create table with demand values 
+
+demand1 <- left_join(demandAGEadd, demandRACEadd, by= "GEOID")
+```
+

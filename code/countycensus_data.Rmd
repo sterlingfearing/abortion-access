@@ -63,11 +63,16 @@ head(pVarNames)
 
 ##Economic Variables
 
-## identify variables from S1701: POVERTY STATUS IN THE PAST 12 MONTHS
-#  1. Poverty : S1701_C03_001 Estimate!!Percent below poverty level
+## identify variables from S1301: POVERTY STATUS IN THE PAST 12 MONTHS (Women aged 15-50)
+#  S1301_C01_022: Estimate!!Total!!POVERTY STATUS IN THE PAST 12 MONTHS!!Women 15 to 50 years for whom poverty status is determined
 
-## identify variables from B19301: PER CAPITA INCOME IN THE PAST 12 MONTHS (IN 2018 INFLATION-ADJUSTED DOLLARS)
-#  1. Income : B19301_001 Estimate!!Per capita income in the past 12 months (in 2018 inflation-adjusted dollars)
+# S1301_C01_023: Estimate!!Total!!POVERTY STATUS IN THE PAST 12 MONTHS!!Women 15 to 50 years for whom poverty status is determined!!Below 100 percent of poverty level
+
+# S1301_C01_024: Estimate!!Total!!POVERTY STATUS IN THE PAST 12 MONTHS!!Women 15 to 50 years for whom poverty status is determined!!100 to 199 percent of poverty level
+
+# S1301_C01_025: Estimate!!Total!!POVERTY STATUS IN THE PAST 12 MONTHS!!Women 15 to 50 years for whom poverty status is determined!!200 percent or more above poverty level
+
+
 
 ```
 

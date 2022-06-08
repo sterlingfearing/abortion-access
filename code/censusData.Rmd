@@ -1,0 +1,107 @@
+---
+title: "Census Data"
+author: "Sterling Fearing"
+date: "5/24/2021"
+output: html_document
+---
+
+This code will generate a data frame with the demographic variables (population ages 15-49, race) and the economic variables (poverty, per capita income). 
+Source: 2018 ACS
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load libraries
+
+library(sf)
+library(tidycensus)
+library(tidyverse)
+library(tigris)
+library(tidyr)
+library(here)
+
+```
+
+```{r}
+# explore variables
+
+# census_api_key("key", install = TRUE)
+
+sVarNames <- load_variables(2018, "acs5/subject", cache = TRUE)
+pVarNames <- load_variables(2018, "acs5/profile", cache = TRUE)
+otherVarNames <- load_variables(2018, "acs5", cache = TRUE)
+
+head(pVarNames)
+
+## Demographic Variables
+
+## identify variables from B01001 : AGE & SEX table
+#  1. Female  : Age 15-17  B01001_030 Estimate!!Total!!Female!!15 to 17 years
+#  2. Female  : Age 18-19  B01001_031 Estimate!!Total!!Female!!18 and 19 years
+#  3. Female  : Age 20     B01001_032 Estimate!!Total!!Female!!20 years
+#  4. Female  : Age 21     B01001_033 Estimate!!Total!!Female!!21 years
+#  5. Female  : Age 22-24  B01001_034 Estimate!!Total!!Female!!22 to 24 years
+#  6. Female  : Age 25-29  B01001_035 Estimate!!Total!!Female!!25 to 29 years
+#  7. Female  : Age 30-34  B01001_036 Estimate!!Total!!Female!!30 to 34 years
+#  8. Female  : Age 35-39  B01001_037 Estimate!!Total!!Female!!35 to 39 years
+#  9. Female  : Age 40-44  B01001_038 Estimate!!Total!!Female!!40 to 44 years
+# 10. Female  : Age 45-49  B01001_039 Estimate!!Total!!Female!!45 to 49 years
+
+##Economic Variables
+
+## identify variables from S1301: POVERTY STATUS IN THE PAST 12 MONTHS (Women aged 15-50)
+#  S1301_C01_022: Estimate!!Total!!POVERTY STATUS IN THE PAST 12 MONTHS!!Women 15 to 50 years for whom poverty status is determined
+# S1301_C01_023: Estimate!!Total!!POVERTY STATUS IN THE PAST 12 MONTHS!!Women 15 to 50 years for whom poverty status is determined!!Below 100 percent of poverty level
+# S1301_C01_024: Estimate!!Total!!POVERTY STATUS IN THE PAST 12 MONTHS!!Women 15 to 50 years for whom poverty status is determined!!100 to 199 percent of poverty level
+# S1301_C01_025: Estimate!!Total!!POVERTY STATUS IN THE PAST 12 MONTHS!!Women 15 to 50 years for whom poverty status is determined!!200 percent or more above poverty level
+
+
+
+```
+
+
+```{r}
+# load variables
+
+ACSdata <- get_acs(geography = 'county', variables = c(age15_17 = "B01001_030",
+                                                        age18_19 = "B01001_031",
+                                                        age20 = "B01001_032",
+                                                        age21 = "B01001_033",
+                                                        age22_24 = "B01001_034",
+                                                        age25_29 = "B01001_035",
+                                                        age30_34 = "B01001_036",
+                                                        age35_39 = "B01001_037",
+                                                        age40_44 = "B01001_038",
+                                                        age45_49 = "B01001_039",
+                                                        povWtotal = "S1301_C01_022",
+                                                        povW100 = "S1301_C01_023",
+                                                        povW100_199 = "S1301_C01_024",
+                                                        povW200 = "S1301_C01_025"
+                                                       ),
+                    year = 2018, geometry = FALSE)
+
+```
+```{r}
+#tidy data
+
+ACSdata1 <- ACSdata %>%
+  select(-moe) %>%
+  pivot_wider(names_from = variable,
+              values_from = estimate) %>%
+  filter(!str_detect(NAME, "Hawaii|Alaska|Puerto Rico")) %>%
+  mutate(age20_24 = age20 + age21 + age22_24,
+         age40_49 = age40_44 + age45_49)  %>% #create columns that match age categories
+  mutate(age15_49 = age15_17 + age18_19 + age20 + age21 + age22_24 + age25_29 + age30_34 + age35_39 + age40_44 + age45_49)
+
+```
+```
+
+```{r}
+# save as csv
+
+write_csv(ACSdata1,"code/data/ACSdata.csv")
+
+```
+
+

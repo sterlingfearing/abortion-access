@@ -167,9 +167,21 @@ demandAGEadd <- demandAGE %>%
 ```{r}
 # Estimate demand by race
 
-raceDemand <- demandAGEadd %>%
-  mutate()
+demandRACE <- joinDemand2 %>%
+  mutate(whiteD = age15_49*whiteR) %>%
+  mutate(blackD = age15_49*blackR) %>%
+  mutate(asianD = age15_49*asianR) %>%
+  mutate(hispD = age15_49*hispR)
 
+# add groups to determine demand based on race in each county
 
+demandRACEadd <- demandRACE %>%
+  mutate(raceD = whiteD + blackD + asianD + hispD)
+```
+
+```{r}
+# Estimate demand by income 
+
+demandINCOME <- 
 ```
 
