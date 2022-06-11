@@ -1,0 +1,114 @@
+---
+title: "Nearest Resource Analysis (County)"
+author: "Sterling Fearing"
+date: "6/5/2021"
+output: html_document
+---
+
+Goal: Calculate distance to nearest abortion clinic by county. 
+Reference: https://geodacenter.github.io/opioid-environment-toolkit/centroid-access-tutorial.html
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load libraries
+
+library(sf)
+library(tmap)
+library(units)
+library(tidyverse)
+
+```
+
+```{r}
+# load data
+
+# ANSIRH 2020 abortion clinic addresses (geocoded)
+clinicsSF <- st_read("data/clinicPoints.shp")
+
+# US Census tract boundaries
+counties <- st_read("data/countyLines.shp")
+```
+```{r}
+# quick plot to check data
+
+tm_shape(counties) +
+  tm_borders() +
+tm_shape(clinicsSF) +
+  tm_dots(col = "blue", size = 0.2)
+```
+
+```{r}
+# change projection to USA Contiguous Lambert Conformal Conic
+
+counties <- st_transform(counties, "+proj=lcc +lat_1=33 +lat_2=45 +lat_0=39 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs")
+
+# calculate centroids 
+countyCentroids <- st_centroid(counties)
+
+# plot to check centroids
+plot(st_geometry(counties))
+plot(st_geometry(countyCentroids), add = TRUE, col = "red")
+
+```
+
+
+```{r}
+# save crs for counties to apply to clinic points
+
+newCRS <- st_crs(countyCentroids)
+clinicsSf <- st_transform(clinicsSF, newCRS)
+
+```
+
+```{r}
+# identify the resources closest to centroids to create index
+
+nearestClinic_indexes <- st_nearest_feature(countyCentroids, clinicsSf)
+
+nearestClinic <- clinicsSf[nearestClinic_indexes,]
+```
+
+```{r}
+# calculate distance between nearest resource and county centroid
+
+minDist <- st_distance(countyCentroids, nearestClinic, by_element = TRUE)
+
+# change to miles 
+minDist_mi <- set_units(minDist, "mi")
+
+```
+
+```{r}
+# join min. distance to county data
+
+minDistSf <- cbind(counties, minDist_mi)
+```
+
+```{r}
+# visualize min distance 
+
+tmap_mode("plot")
+
+tm_shape(minDistSf) +
+  tm_polygons("minDist_mi", style = 'quantile', n=5,
+              title = "Minimum Distance (mi)") +
+  tm_layout(main.title = "Minimum Distance from County Centroid\n to Abortion Clinic",
+            main.title.position = "center",
+            main.title.size = 1)
+```
+
+
+```{r}
+# save data as csv
+
+write_csv(minDistSf, "data/NRAcounty2.csv")
+
+write_sf(minDistSf, "data/NRAcounty.csv")
+
+# save data as shp
+
+write_sf(minDistSf, "data/NRAcounty.shp")
+```
