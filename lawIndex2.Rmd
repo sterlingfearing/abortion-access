@@ -23,6 +23,7 @@ library(here)
 # source: lawIndex.Rmd, line 156, tempLawindex.csv
 
 data <- read_csv(here("code/data/tempLawIndex2.csv"))
+FIPS <- read_csv(here("code/data/stateLaw.csv"))
 
 ```
 
@@ -48,8 +49,24 @@ data$indexLAW <- as.numeric(data$indexLAW)
 ```
 
 ```{r}
+# add state FIPS from stateLaw.csv
+
+data <- data %>%
+  mutate(stateAB = state) #change variable name to match
+
+lawIndex <- full_join(FIPS, data, by = "stateAB") # join tables
+
+# select variables of interest
+
+lawIndex2 <- lawIndex %>%
+  select(stateFIPS, twoPhysV, gestLimV, pbBanV, pubFundAllV, privLimV, parentV, indexLAW)
+```
+
+```{r}
 # save demand index
 
-write_csv(data, here("code/data/lawIndex2.csv"))
+write_csv(data, here("code/data/lawIndexFull.csv"))
+
+write_csv(lawIndex2, here("code/data/lawIndexSum"))
 ```
 
