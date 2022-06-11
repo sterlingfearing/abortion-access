@@ -73,6 +73,6 @@ lawIndex3 <- lawIndex2 %>%
 
 write_csv(data, here("code/data/lawIndexFull.csv"))
 
-write_csv(lawIndex3, here("code/data/lawIndexSum"))
+write_csv(lawIndex3, here("code/data/lawIndexSum.csv"))
 ```
 
