@@ -164,9 +164,17 @@ joinAR <- left_join(demandAGE2, demandRACE2, by= "GEOID")
 joinARI <- left_join(joinAR, demandINCOME2, by= "GEOID")
 ```
 
+
+```{r}
+# split GEOID to create stateFIPS and countyFIPS columns
+
+splitGEO <- joinARI %>%
+  separate(GEOID, into = c('stateFIPS', 'countyFIPS'), sep = 2, remove = FALSE)
+```
+
 ```{r}
 # save as CSV
 
-write_csv(joinARI, here("code/data/demand.csv"))
+write_csv(joinARI, here("code/data/demandIndex.csv"))
 ```
 
