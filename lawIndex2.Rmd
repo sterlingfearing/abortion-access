@@ -60,6 +60,12 @@ lawIndex <- full_join(FIPS, data, by = "stateAB") # join tables
 
 lawIndex2 <- lawIndex %>%
   select(stateFIPS, twoPhysV, gestLimV, pbBanV, pubFundAllV, privLimV, parentV, indexLAW)
+
+# remove AK, HI 
+
+lawIndex3 <- lawIndex2 %>%
+  filter(stateFIPS != "02" & stateFIPS != "15")
+
 ```
 
 ```{r}
@@ -67,6 +73,6 @@ lawIndex2 <- lawIndex %>%
 
 write_csv(data, here("code/data/lawIndexFull.csv"))
 
-write_csv(lawIndex2, here("code/data/lawIndexSum"))
+write_csv(lawIndex3, here("code/data/lawIndexSum"))
 ```
 
