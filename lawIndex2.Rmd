@@ -1,0 +1,55 @@
+---
+title: "Law Index (Second Approach)"
+author: "Sterling Fearing"
+date: "6/10/2022"
+output: html_document
+---
+
+Goal: Use strategy applied to demand index for consistent approach. (See treeindex.R from Dr. Kolak)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load libraries
+
+library(tidyverse)
+library(here)
+```
+
+```{r}
+# load data
+# source: lawIndex.Rmd, line 156, tempLawindex.csv
+
+data <- read_csv(here("code/data/tempLawIndex2.csv"))
+
+```
+
+```{r}
+# centers and/or scales the columns of a numeric matrix
+
+data$twoPhysV <- scale(data$twoPhysI)
+data$gestLimV <- scale(data$gestLimI)
+data$pbBanV <- scale(data$pbBanI)
+data$pubFundAllV <- scale(data$pubFundAllI)
+data$privLimV <- scale(data$privLimI)
+data$parentV <- scale(data$parentI)
+data$twoTripsV <- scale(data$twoTripsI)
+
+```
+
+```{r}
+#Equally weight index 
+
+data$indexLAW <-  ((data$twoPhysV + data$gestLimV + data$pbBanV + data$pubFundAllV + data$privLimV + data$parentV + data$twoTripsV)/7)
+data$indexLAW <- as.numeric(data$indexLAW)
+
+```
+
+```{r}
+# save demand index
+
+write_csv(data, here("code/data/lawIndex2.csv"))
+```
+
