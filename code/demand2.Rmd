@@ -40,12 +40,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 # load libraries
-
-library(sf)
 library(tidycensus)
 library(tidyverse)
-library(tigris)
-library(tidyr)
 library(here)
 
 ```
@@ -175,6 +171,6 @@ splitGEO <- joinARI %>%
 ```{r}
 # save as CSV
 
-write_csv(joinARI, here("code/data/demandIndex.csv"))
+write_csv(splitGEO, here("code/data/demandIndex.csv"))
 ```
 
