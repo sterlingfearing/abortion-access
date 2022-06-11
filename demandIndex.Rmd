@@ -1,0 +1,51 @@
+---
+title: "Demand Index"
+author: "Sterling Fearing"
+date: "6/10/2022"
+output: html_document
+---
+
+Goal: Create index that represents level of demand for abortion services based on age, race, and income ratios. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load libraries 
+
+library(tidyverse)
+library(here)
+library(tmap)
+```
+
+```{r}
+# Load demand table
+
+demand <- read_csv(here("code/data/demand.csv"))
+
+```
+
+```{r}
+# centers and/or scales the columns of a numeric matrix
+
+demand$age <- scale(demand$age15_49D)
+demand$race <- scale(demand$raceD)
+demand$income <- scale(demand$incomeD)
+
+```
+
+```{r}
+#Equally weight index 
+
+demand$index <-  ((demand$age + demand$race + demand$income)/3)
+demand$index <- as.numeric(demand$index)
+
+```
+
+```{r}
+# save demand index
+
+write_csv(demand, here("code/data/demandIndex.csv"))
+```
+
