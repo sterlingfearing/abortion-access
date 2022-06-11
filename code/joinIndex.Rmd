@@ -11,22 +11,42 @@ Goal: Join demand index, NRA, law index, and political rep.
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+```{r}
+# load libraries
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+library(tidyverse)
+library(here)
+library(dplyr)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
+```{r}
+# load data
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+demandRaw <- read_csv(here("code/data/demandIndex.csv"))
+NRAraw <- read_csv(here("code/data/NRAcounty2.csv"))
+lawRaw <- read_csv(here("code/data/lawIndexSum.csv"))
+partyRaw <- read_csv(here("code/data/stateParty.csv"))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+
+# join tables for exploratory analysis
+
+join1 <- left_join(demandRaw, NRAraw, by= "GEOID") %>%
+  mutate(stateFIPS = stateFIPS.x) # change column name to match lawRaw
+
+join2 <- left_join(join1, lawRaw, by= "stateFIPS")
+
+join3 <- left_join(join2, partyRaw, by= "stateFIPS")
+  
+```
+
+```{r}
+
+# delete repeating variables
+
+clean1 <- join3 %>%
+  select(GEOID, stateFIPS.x, countyFIPS.x, age15_17D, age18_19D, age20_24D, age25_29D, age30_34D, age35_39D, age40_49D, age15_49D, )
+```
+

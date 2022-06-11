@@ -100,6 +100,9 @@ tm_shape(minDistSf) +
             main.title.size = 1)
 ```
 
+# used Numbers to create csv w/o geometry 
+# R running delayed
+# new file saved as "NRA_noGeo.csv"
 
 ```{r}
 # save data as csv
