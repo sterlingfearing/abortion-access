@@ -101,7 +101,8 @@ demandAGEadd <- demandAGE %>%
 
 # select variables of interest
 
-
+demandAGE2 <- demandAGEadd %>%
+  select(GEOID, age15_17D, age18_19D, age20_24D, age25_29D, age30_34D, age35_39D, age40_49D, age15_49D)
 
 ```
 
@@ -129,6 +130,10 @@ demandRACE <- estRACE %>%
 
 demandRACEadd <- demandRACE %>%
   mutate(raceD = whiteD + blackD + asianD + hispD)
+
+# select variables of interest
+demandRACE2 <- demandRACEadd %>%
+  select(GEOID, whiteD, blackD, asianD, hispD, raceD)
 ```
 
 ```{r}
@@ -146,11 +151,22 @@ demandINCOME <- joinD %>%
 
 demandINCOMEadd <- demandINCOME %>%
   mutate(incomeD = p100D + p100_199D + p200D)
+
+demandINCOME2 <- demandINCOMEadd %>%
+  select(GEOID, p100D, p100_199D, p200D, incomeD)
 ```
 
 ```{r}
-# create table with demand values 
+# join age, race, income tables to create demand table
 
-demand1 <- left_join(demandAGEadd, demandRACEadd, by= "GEOID")
+joinAR <- left_join(demandAGE2, demandRACE2, by= "GEOID") 
+
+joinARI <- left_join(joinAR, demandINCOME2, by= "GEOID")
+```
+
+```{r}
+# save as CSV
+
+write_csv(joinARI, here("code/data/demand.csv"))
 ```
 
