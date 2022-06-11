@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(sf)
 library(tmap)
 library(units)
+library(tidyverse)
 
 ```
 
@@ -38,6 +39,7 @@ tm_shape(counties) +
 tm_shape(clinicsSF) +
   tm_dots(col = "blue", size = 0.2)
 ```
+
 ```{r}
 # change projection to USA Contiguous Lambert Conformal Conic
 
@@ -51,6 +53,8 @@ plot(st_geometry(counties))
 plot(st_geometry(countyCentroids), add = TRUE, col = "red")
 
 ```
+
+
 ```{r}
 # save crs for counties to apply to clinic points
 
@@ -96,8 +100,11 @@ tm_shape(minDistSf) +
             main.title.size = 1)
 ```
 
+
 ```{r}
 # save data as csv
+
+write_csv(minDistSf, "data/NRAcounty2.csv")
 
 write_sf(minDistSf, "data/NRAcounty.csv")
 
