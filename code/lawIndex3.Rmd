@@ -59,7 +59,7 @@ lawIndex <- full_join(FIPS, data, by = "stateAB") # join tables
 # select variables of interest
 
 lawIndex2 <- lawIndex %>%
-  select(stateFIPS, twoPhysV, gestLimV, pbBanV, pubFundAllV, privLimV, parentV, indexLAW)
+  select(stateFIPS, stateAB, twoPhysV, gestLimV, pbBanV, pubFundAllV, privLimV, parentV, indexLAW)
 
 # remove AK, HI 
 
