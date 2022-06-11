@@ -24,7 +24,7 @@ library(dplyr)
 # load data
 
 demandRaw <- read_csv(here("code/data/demandIndex.csv"))
-NRAraw <- read_csv(here("code/data/NRAcounty2.csv"))
+NRAraw <- read_csv(here("code/data/NRA_noGeo.csv"))
 lawRaw <- read_csv(here("code/data/lawIndexSum.csv"))
 partyRaw <- read_csv(here("code/data/stateParty.csv"))
 ```
@@ -43,10 +43,52 @@ join3 <- left_join(join2, partyRaw, by= "stateFIPS")
 ```
 
 ```{r}
+# Select variables of interest for complete df and summary df
 
-# delete repeating variables
+# create summary table with indices 
+cleanSum <- join3 %>%
+  select(GEOID, stateFIPS.x, countyFIPS.x, stateAB.x, county, minDist_mi, index, indexLAW, legCon, govCon, stateCon) # variable 'index'= indexD (demand summary)
 
-clean1 <- join3 %>%
-  select(GEOID, stateFIPS.x, countyFIPS.x, age15_17D, age18_19D, age20_24D, age25_29D, age30_34D, age35_39D, age40_49D, age15_49D, )
+# create table with all values 
+cleanData <- join3 %>%
+  select(GEOID, stateFIPS.x, countyFIPS.x, stateAB.x, county, age15_17D, age18_19D, age20_24D, age25_29D, age30_34D, age35_39D, age40_49D, age15_49D, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, age, race, income, index, minDist_mi, twoPhysV, gestLimV, pbBanV, pubFundAllV, privLimV, parentV, indexLAW, legCon, govCon, stateCon)
+```
+
+```{r}
+# Rename variables 
+# Suffixes:
+# AB = abbreviation
+# I = index
+# D = demand
+# V = value (post-scaling)
+
+
+cleanSum2 <- cleanSum %>%
+  rename(stateFIPS = stateFIPS.x,
+         countyFIPS = countyFIPS.x,
+         stateAB = stateAB.x,
+         demandI = index,
+         lawI = indexLAW,
+         )
+
+cleanData2 <- cleanData %>%
+  rename(stateFIPS = stateFIPS.x,
+         countyFIPS = countyFIPS.x,
+         stateAB = stateAB.x, 
+         ageD = age15_49D, 
+         ageV = age, 
+         raceV = race,
+         incomeV = income,
+         demandI = index, 
+         lawI = indexLAW)
+
+```
+
+```{r}
+# save as csv
+
+write_csv(cleanSum2, here("code/data/indexSummary.csv"))
+
+write_csv(cleanData2, here("code/data/indexAllVar.csv"))
 ```
 
