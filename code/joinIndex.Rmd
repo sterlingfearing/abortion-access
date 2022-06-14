@@ -17,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(dplyr)
+library(sf)
 
 ```
 
@@ -27,6 +28,7 @@ demandRaw <- read_csv(here("code/data/demandIndex.csv"))
 NRAraw <- read_csv(here("code/data/NRA_noGeo.csv"))
 lawRaw <- read_csv(here("code/data/lawIndexSum.csv"))
 partyRaw <- read_csv(here("code/data/stateParty.csv"))
+geo <- st_read(here("code/data/NRAcounty.shp"))
 ```
 
 ```{r}
@@ -85,10 +87,33 @@ cleanData2 <- cleanData %>%
 ```
 
 ```{r}
-# save as csv
+# Add geometry
 
+# select variables of interest from shp file 
+selectgeo <- geo %>%
+  select(GEOID, geometry)
+
+# join complete table with geo
+indexC <-left_join(cleanData2, selectgeo, by = "GEOID")
+
+# join summary table with geo
+indexS <- left_join(cleanSum2, selectgeo, by = "GEOID")
+
+
+```
+
+```{r}
+# save csv files w/o geo
+
+# index summaries
 write_csv(cleanSum2, here("code/data/indexSummary.csv"))
-
+# all variables
 write_csv(cleanData2, here("code/data/indexAllVar.csv"))
+
+# save summary table with geometry
+write_sf(indexS, here("code/data/indexS.shp"), driver = "ESRI Shapefile")
+
+# save complete table with geometry
+write_sf(indexC, here("code/data/indexC.shp"), driver = "ESRI Shapefile")
 ```
 
