@@ -22,7 +22,7 @@ library(here)
 ```{r}
 # Load demand table
 
-demand <- read_csv(here("code/data/demand.csv"))
+demand <- read_csv(here("code/data/demand2.csv"))
 
 ```
 
