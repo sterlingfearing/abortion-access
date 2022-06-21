@@ -29,14 +29,15 @@ FIPS <- read_csv(here("code/data/stateLaw.csv"))
 
 ```{r}
 # centers and/or scales the columns of a numeric matrix
+# correct for directionality
 
-data$twoPhysV <- scale(data$twoPhysI)
-data$gestLimV <- scale(data$gestLimI)
-data$pbBanV <- scale(data$pbBanI)
-data$pubFundAllV <- scale(data$pubFundAllI)
-data$privLimV <- scale(data$privLimI)
-data$parentV <- scale(data$parentI)
-data$twoTripsV <- scale(data$twoTripsI)
+data$twoPhysV <- -scale(data$twoPhysI)
+data$gestLimV <- -scale(data$gestLimI)
+data$pbBanV <- -scale(data$pbBanI)
+data$pubFundAllV <- -scale(data$pubFundAllI)
+data$privLimV <- -scale(data$privLimI)
+data$parentV <- -scale(data$parentI)
+data$twoTripsV <- -scale(data$twoTripsI)
 
 ```
 
@@ -69,7 +70,7 @@ lawIndex3 <- lawIndex2 %>%
 ```
 
 ```{r}
-# save demand index
+# save law index
 
 write_csv(data, here("code/data/lawIndexFull.csv"))
 
