@@ -171,6 +171,6 @@ splitGEO <- joinARI %>%
 ```{r}
 # save as CSV
 
-write_csv(splitGEO, here("code/data/demandIndex.csv"))
+write_csv(splitGEO, here("code/data/demand2.csv"))
 ```
 
