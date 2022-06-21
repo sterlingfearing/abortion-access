@@ -82,6 +82,7 @@ ACSdata <- get_acs(geography = 'county', variables = c(age15_17 = "B01001_030",
                     year = 2018, geometry = FALSE)
 
 ```
+
 ```{r}
 #tidy data
 
@@ -100,7 +101,7 @@ ACSdata1 <- ACSdata %>%
 ```{r}
 # save as csv
 
-write_csv(ACSdata1,"code/data/ACSdata.csv")
+write_csv(ACSdata1,"code/data/ACSdata(noRio).csv")
 
 ```
 

@@ -53,7 +53,7 @@ library(here)
 race <- read_csv(here("code", "data", "racePercent.csv"))
 
 # cleaned census data from censusData.Rmd
-ACS <- read_csv(here("code", "data", "ACSdata.csv"))
+ACS <- read_csv(here("code", "data", "ACSdata.csv")) #ACS version edited with Numbers to add est. pov for Rio Arriba, NM
 
 ```
 
