@@ -4,6 +4,10 @@ output: html_document
 date: '2022-07-10'
 ---
 
+# Goal: Nearest resource analysis (minimum distance in miles) from county centroid to abortion clinic. Using updated data following overturn of Roe vs. Wade. 
+
+# Goal 2: Join pre and post Roe NRA. 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -107,5 +111,31 @@ write_csv(minDistSf, "code/data/NRApostRoe.csv")
 write_sf(minDistSf, "code/data/NRApostRoe.shp")
 ```
 
+```{r}
+# join NRApostRoe and NRAcounty
+
+# load files
+postRoe <- read_csv("code/data/NRApostRoe.csv")
+preRoe <- st_read("code/data/NRAcounty.shp")
+
+# join
+NRA <- full_join(preRoe, postRoe, by= "GEOID")
+
+# clean
+NRA <- NRA %>%
+  select("GEOID", "stateFIPS.x", "countyFIPS.x", "county.x", "minDist_mi.x", "minDist_mi.y", "geometry.x") 
+
+NRA <- NRA %>%
+  rename(stateFIPS = "stateFIPS.x", 
+         countyFIPS = "countyFIPS.x", 
+         county = "county.x", 
+         minDist_Roe = "minDist_mi.x", 
+         minDist_postRoe = "minDist_mi.y", 
+         geometry = "geometry.x")
+
+# save file
+
+write_sf(NRA, "code/data/compareNRA.shp")
+```
 
 
