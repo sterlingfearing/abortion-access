@@ -48,9 +48,7 @@ counties <- st_transform(counties, "+proj=lcc +lat_1=33 +lat_2=45 +lat_0=39 +lon
 # calculate centroids 
 countyCentroids <- st_centroid(counties)
 
-# plot to check centroids
-plot(st_geometry(counties))
-plot(st_geometry(countyCentroids), add = TRUE, col = "red")
+
 
 ```
 
@@ -119,23 +117,24 @@ postRoe <- read_csv("code/data/NRApostRoe.csv")
 preRoe <- st_read("code/data/NRAcounty.shp")
 
 # join
-NRA <- full_join(preRoe, postRoe, by= "GEOID")
+NRAjoin <- full_join(preRoe, postRoe, by= "GEOID")
 
 # clean
-NRA <- NRA %>%
-  select("GEOID", "stateFIPS.x", "countyFIPS.x", "county.x", "minDist_mi.x", "minDist_mi.y", "geometry.x") 
+NRA <- NRAjoin %>%
+  select("GEOID", "stateFIPS.x", "countyFIPS.x", "county.x", "state.x", "minDist_mi.x", "minDist_mi.y", "geometry.x") 
 
-NRA <- NRA %>%
+NRA2 <- NRA %>%
   rename(stateFIPS = "stateFIPS.x", 
          countyFIPS = "countyFIPS.x", 
-         county = "county.x", 
+         county = "county.x",
+         state= "state.x",
          minDist_Roe = "minDist_mi.x", 
          minDist_postRoe = "minDist_mi.y", 
          geometry = "geometry.x")
 
 # save file
 
-write_sf(NRA, "code/data/compareNRA.shp")
+write_sf(NRA2, "code/data/compareNRA.shp")
 ```
 
 

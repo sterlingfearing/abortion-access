@@ -109,13 +109,12 @@ tm_shape(minDistSf) +
 ```{r}
 # save data as csv
 
-write_csv(minDistSf, "data/NRAcounty2.csv")
+write_csv(minDistSf, "abortion-access/code/data/NRAcounty.csv")
 
-write_sf(minDistSf, "data/NRAcounty.csv")
 
 # save data as shp
 
-write_sf(minDistSf, "data/NRAcounty.shp")
+write_sf(minDistSf, "code/data/NRAcounty.shp")
 ```
 
 
