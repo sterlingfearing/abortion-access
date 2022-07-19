@@ -6,7 +6,8 @@ output: html_document
 ---
 
 This code will generate a data frame with the demographic variables (population ages 15-49, race) and the economic variables (poverty, per capita income). 
-Source: 2018 ACS
+Source: 2018 ACS US Census
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
