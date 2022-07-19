@@ -68,6 +68,6 @@ master <- join5 %>%
   select("GEOID", "stateFIPS.x", "countyFIPS.x", "popTot", "age15_49", "whiteP", "blackP", "amIndP", "asianP", "pacIsP", "hispP", "otherP", "povPerc", "pciE", "SVIth1", "SVIth2", "SVIth3", "SVIth4", "SVIS", "rcaUrbP", "rcaRuralP", "state.x", "totPop10", "urbPop10", "rurlPop10", "cenRuralP", "county", "state.y", "minDist_mi", "gestational", "funding", "medical", "personal", "overall", "legCon", "govCon", "stateCon")
 
 # save csv
-write_csv(master, here("code/data/dataMaster.csv"))
+write_csv(master, here("code/data/dataTempJoin.csv"))
 ```
 
