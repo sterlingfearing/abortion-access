@@ -169,8 +169,22 @@ splitGEO <- joinARI %>%
 ```
 
 ```{r}
+# select variables of interest 
+
+selectVar <- splitGEO %>%
+  select(GEOID, stateFIPS, countyFIPS, age15_49D, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD) %>%
+  rename(ageD = age15_49D)
+
+demand <- selectVar %>%
+  mutate(totalD = ageD + raceD + incomeD)
+  
+```
+
+```{r}
 # save as CSV
 
-write_csv(splitGEO, here("code/data/demand2.csv"))
+write_csv(demand, here("code/data/demand2.csv"))
 ```
+
+
 
