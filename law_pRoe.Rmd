@@ -212,18 +212,15 @@ indexFinal <- indexActive %>%
    filter(!state_name %in% c("AK", "HI", "DC")) %>% # remove states
    mutate(overall = gestational + funding + medical + personal) %>%
    arrange(desc(overall))
-   
-indexFinal %>%
-   ggplot(aes(x= overall)) +
-   geom_histogram() 
+```
 
-# summary stats
-indexFinal %>%
-   group_by(NULL) %>%
-   summarise(mean= mean(overall),
-             sd= sd(overall),
-             count= n()
-             )
+```{r}
+# save table
 
-# save final index
-write_csv(indexFinal, here("code/data/lawIndex.csv"))
+write_csv(indexFinal, here("code/data/lawI_PR.csv"))
+
+```
+
+
+
+
