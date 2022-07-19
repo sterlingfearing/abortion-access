@@ -75,12 +75,17 @@ join_NRA_demand <- left_join(NRArename, demandRaw, by= "GEOID")
 join_county <- left_join(join_NRA_demand, censusRaw, by= "GEOID")
 
 # remove duplicates
-county_var <- join_county %>%
-  select(GEOID, stateFIPS.x, countyFIPS.x, county, state, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, povW100, povW100_199, povW200up, distRoe, distDobbs, distDiff, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, geometry)
 
-# save file 
+countyData <- join_county %>%
+  select(GEOID, stateFIPS.x, countyFIPS.x, county, state, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, distRoe, distDobbs, distDiff, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, geometry) %>%
+  rename(stateFIPS = "stateFIPS.x",
+         countyFIPS = "countyFIPS.x")
 
+# save shapefile for county data
+st_write(countyData, here("code/data/countyMaster.shp"))
 
+# save csv
+write_csv(countyData, here("code/data/countyMaster.csv"))
 
 ```
 
@@ -113,10 +118,40 @@ join_state_rename <- join_state %>%
          persDobb = personal.y,
          summDobb = overall.y)
 
+# add state geometry to save as shapefile
+stateGeo <- st_read(here("code/data/stateLines.shp"))
+# remove DC
+state_removeDC <- stateGeo %>%
+  filter(!str_detect(state, "District of Columbia"))
+# join
+stateMaster_geo <- full_join(join_state_rename, stateGeo, by = "stateFIPS")
+# save shapefile
+st_write(stateMaster_geo, here("code/data/stateMaster.shp"))
+# save as csv without geometry
+write_csv(join_state_rename, here("code/data/stateMaster.csv"))
+
 ```
 
 ```{r}
+# apply state variables across counties
 
-#
+join_state_county <- left_join(countyData, join_state_rename, by= "stateFIPS", keep= FALSE)
+
+# remove repeating variables
+
+dataComplete <- join_state_county %>%
+  select(GEOID, stateFIPS, countyFIPS, county, state.x, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, distRoe, distDobbs, distDiff, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, legCon, govCon, stateCon, gestRoe, fundRoe, medRoe, persRoe, summRoe, gestDobb, fundDobb, medDobb, persDobb, summDobb, geometry) %>%
+  rename(state= "state.x")
+
+```
+
+```{r}
+# save as shapefile
+
+st_write(dataComplete, here("code/data/dataMaster.shp"))
+
+# save as csv
+
+write_csv(dataComplete, here("code/data/dataMaster.csv"))
 ```
 
