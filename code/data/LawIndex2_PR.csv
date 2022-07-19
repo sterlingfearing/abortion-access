@@ -1,0 +1,52 @@
+state,twoPhys,gestLim,pbBan,pubFundAll,pubFundLim,privLim,parent,twoTrips,twoPhysI,gestLimI,pbBanI,pubFundAllI,pubFundLimI,privLimI,parentI,twoTripsI
+AL,Viability,Banned,▼,NA,X,NA,Consent,NA,2,15,0.5,1,3,0,2,0
+AK,NA,NA,▼,X,NA,NA,▼,NA,0,0,0.5,0,0,0,0.25,0
+AZ,Viability,Viability,X,NA, ϴ ,X,Consent,X,2,3,3,1,1,1,2,4
+AR,Viability,Banned,X,NA,X,NA,Consent,X,2,15,3,1,3,0,2,4
+CA,NA,Viability,NA,X,NA,NA,▼,NA,0,3,0,0,0,0,0.25,0
+CO,NA,NA,NA,NA,X,NA,Notice,NA,0,0,0,1,3,0,1,0
+CT,NA,Viability,NA,X,NA,NA,NA,NA,0,3,0,0,0,0,0,0
+DE,NA,ViabilityΩ​,NA,NA,X,NA,Noticeξ​,NA,0,2,0,1,3,0,0.5,0
+DC,NA,NA,NA,NA,X,NA,NA,NA,0,0,0,1,3,0,0,0
+FL,24 weeks,15 weeks,▼,NA,X,NA,Consent and Notice,▼,2,7.5,0.5,1,3,0,3,0.25
+GA,NA,20 weeks*,Postviability,NA,X,NA,Notice,NA,0,4,2,1,3,0,1,0
+HI,NA,Viability,NA,X,NA,NA,NA,NA,0,3,0,0,0,0,0,0
+ID,3rd trimester,Viability,▼,NA,X,X,Consent,NA,1,3,0.5,1,3,1,2,0
+IL,NA,Viability,NA,X,NA,NA,Notice,NA,0,3,0,0,0,0,1,0
+IN,20 weeks,20 weeks*,X,NA,X*,X,Consent,X,3,4,3,1,2.5,1,2,4
+IA,NA,20 weeks*,▼,NA,X,NA,Notice,▼,0,4,0.5,1,3,0,1,0.25
+KS,Viability,20 weeks*,X,NA,X,X,Consent,NA,2,4,3,1,3,1,2,0
+KY,NA,15 weeks,▼,NA,X,X,Consent,Xtele,0,7.5,0.5,1,3,1,2,1
+LA,Viability,20 weeks*,X,NA,X,NA,Consent,X,2,4,3,1,3,0,2,4
+ME,NA,Viability,NA, X,NA,NA,NA,NA,0,3,0,0,0,0,0,0
+MD,NA,ViabilityΩ,NA,X,NA,NA,Noticeξ​,NA,0,2,0,0,0,0,0.5,0
+MA,NA,24 weeksΩ,NA,X,NA,NA,Consentβ​,NA,0,2,0,0,0,0,1.5,0
+MI,NA,Viability‡​,X,NA,X, X,Consent,X,0,5,3,1,3,1,2,4
+MN,20 weeks,Viability,NA,X,NA,NA,Noticeþ​,NA,3,3,0,0,0,0,1,0
+MS,NA,Banned,X,NA,XΩ,NA,Consentþ​,X,0,15,3,1,2.5,0,2,4
+MO,Viability,Banned,X,NA,X,X,Consent,NA,2,15,3,1,3,1,2,0
+MT,Viability,Viability*,Postviability,X,NA,NA,▼,NA,2,2,2,0,0,0,0.25,0
+NE,NA,20 weeks*,▼,NA,X,X,Consent,NA,0,4,0.5,1,3,1,2,0
+NV,NA,24 weeks,NA,NA,X,NA,▼,NA,0,3,0,1,3,0,0.25,0
+NH,NA,24 weeks,X,NA,X,NA,Notice,NA,0,3,3,1,3,0,1,0
+NJ,NA,NA,▼,X,NA,NA,▼,NA,0,0,0.5,0,0,0,0.25,0
+NM,NA,NA,Postviability,X,NA,NA,▼,NA,0,0,2,0,0,0,0.25,0
+NY,NA,ViabilityΩ,NA,X,NA,NA,NA,NA,0,2,0,0,0,0,0,0
+NC,NA,Viability*,NA,NA,X,NA,Consent,NA,0,2,0,1,3,0,2,0
+ND,NA,20 weeks*,X,NA,X,X,Consentþ​,NA,0,4,3,1,3,1,2,0
+OH,20 weeks,6 weeks,X,NA,X,NA,Consent,X,3,12,3,1,3,0,2,4
+OK,Viability,Banned,X,NA,X,X,Consent and Notice,NA,2,15,3,1,3,1,3,0
+OR,NA,NA,NA,X,NA,NA,NA,NA,0,0,0,0,0,0,0,0
+PA,Viability,24 weeks*,NA,NA,X,NA,Consent,NA,2,2,0,1,3,0,2,0
+RI,NA,Viability,▼,NA,X,NA,Consent,NA,0,3,0.5,1,3,0,2,0
+SC,3rd trimester,6 weeks,X,NA,X,NA,Consent,NA,1,12,3,1,3,0,2,0
+SD,NA,Banned,X,NA,Life Only,NA,Notice,X,0,15,3,1,4,0,1,4
+TN,Viability ,6 weeks,X,NA,X,NA,Consent,▼,2,12,3,1,3,0,2,0.25
+TX,NA,Banned, X,NA,X, X ,Consent and Notice,X100,0,15,3,1,3,1,3,3
+UT,NA,"Viability†,Ω​",X,NA,X*,X,Consent and Notice,Xany,0,1,3,1,2.5,1,3,2
+VT,NA,NA,NA,X,NA,NA,NA,NA,0,0,0,0,0,0,0,0
+VA,Viability,3rd trimester,X,NA,XΩ​,NA,Consent and Notice,NA,2,1,3,1,2.5,0,3,0
+WA,NA,Viability,NA,X,NA,NA,NA,NA,0,3,0,0,0,0,0,0
+WV,NA,20 weeks*,▼,NA,"X* ,Ω​",NA,Noticeξ​,NA,0,4,0.5,1,2,0,0.5,0
+WI,NA,20 weeks*,▼,NA,X*,NA,Consentξ​,X,0,4,0.5,1,2.5,0,1.5,4
+WY,NA,Viability,NA,NA,X,NA,Consent and Notice,NA,0,3,0,1,3,0,3,0

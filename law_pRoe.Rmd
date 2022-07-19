@@ -1,0 +1,229 @@
+---
+title: "Law Index Post-Roe"
+output: html_document
+date: '2022-07-19'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+title: "State Abortion Law Index (Post-Roe)"
+author: "Sterling Fearing"
+date: "9/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load libraries
+library(purrr)
+library(tidyverse)
+library(here)
+```
+
+```{r}
+# Load data
+
+lawPR_raw <- read_csv(here("code/data/laws_postRoe.csv"))
+
+
+```
+
+```{r}
+# Clean data
+
+# select variables of interest
+lawSelect <- lawPR_raw %>%
+   select("STATE", "SECOND PHYSICIAN MUST PARTICIPATE IF AT:", "PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:", "\"PARTIAL-BIRTH\" ABORTION BANNED", "Funds All or Most Medically Necessary Abortions", "Funds Limited  to Life Endangerment, Rape and Incest", "PRIVATE INSURANCE COVERAGE LIMITED", "PARENTAL INVOLVEMENT REQUIRED FOR MINORS", "In-Person Counseling Necessitates Two Trips to Clinic")
+
+# rename variables
+lawRename <- lawSelect %>%
+   select(state = `STATE`,
+          twoPhys = `SECOND PHYSICIAN MUST PARTICIPATE IF AT:`,
+          gestLim = `PROHIBITED EXCEPT IN CASES OF LIFE OR HEALTH ENDANGERMENT IF AT:`,
+          pbBan = `\"PARTIAL-BIRTH\" ABORTION BANNED`,
+          pubFundAll = `Funds All or Most Medically Necessary Abortions`,
+          pubFundLim = `Funds Limited  to Life Endangerment, Rape and Incest`,
+          privLim = `PRIVATE INSURANCE COVERAGE LIMITED`,
+          parent = `PARENTAL INVOLVEMENT REQUIRED FOR MINORS`,
+          twoTrips = `In-Person Counseling Necessitates Two Trips to Clinic`)
+
+```
+
+```{r}
+
+# Create new columns with index values
+   
+lawIndex_PR <- lawRename %>%
+   mutate(twoPhysI = case_when(str_detect(twoPhys, "20 weeks")~3,
+                               str_detect(twoPhys, "24 weeks")~2,
+                               str_detect(twoPhys, "3rd trimester")~1,
+                               str_detect(twoPhys, "Viability")~2),
+          twoPhysI = replace_na(twoPhysI, 0)) %>%
+          
+                               
+          
+   mutate(gestLimI = case_when(str_detect(gestLim, "Banned")~15,
+                               str_detect(gestLim, "6 weeks")~12,
+                               str_detect(gestLim, "15 weeks")~7.5,
+                               str_detect(gestLim,"20 weeks")~5, 
+                               str_detect(gestLim, "24 weeks")~3, 
+                               str_detect(gestLim, "3rd trimester")~1, 
+                               str_detect(gestLim, "Viability")~3),
+          gestLimI = replace_na(gestLimI, 0)) %>%
+  
+   mutate(pbBanI = case_when(str_detect(pbBan, "X")~3,
+                             str_detect(pbBan, "Postviability")~2),
+          pbBanI = replace_na(pbBanI, 0)) %>%              
+   
+   mutate(pubFundAllI = case_when(str_detect(pubFundAll, "X")~0),
+          pubFundAllI = replace_na(pubFundAllI, 1)) %>%
+   
+   mutate(pubFundLimI = case_when(str_detect(pubFundLim, "Life Only")~4,
+                                  str_detect(pubFundLim, "X")~3),
+          pubFundLimI = replace_na(pubFundLimI, 0)) %>%
+                
+   
+   mutate(privLimI = case_when(str_detect(privLim, "X")~1),
+          privLimI = replace_na(privLimI, 0)) %>%
+   
+   mutate(parentI = case_when(str_detect(parent, "Consent and Notice")~3,
+                              str_detect(parent, "Consent")~2,
+                              str_detect(parent, "Notice")~1),
+          parentI = replace_na(parentI, 0)) %>%
+   
+   mutate(twoTripsI = case_when(str_detect(twoTrips, "X100")~3,
+                                str_detect(twoTrips, "Xany")~2,
+                                str_detect(twoTrips, "Xtele")~1,
+                                str_detect(twoTrips, "X")~4), # X at end to include other entries starting with X
+          twoTripsI = replace_na(twoTripsI, 0))
+                                
+                                 
+```
+
+```{r}
+# Modify values for exceptions/special characters
+
+lawIndexM <- lawIndex_PR %>%   
+   mutate(gestLimI = gestLimI+case_when(str_detect(gestLim, "[‡]")~2, #life endangerment only
+                                        TRUE~0)
+          #+case_when(str_detect(gestLim, "[€]")~2.5, #temporary block on 15 week ban (now law)
+                                        #TRUE~0)
+          +case_when(str_detect(gestLim, "[†]")~-1, #exception:rape or incest
+                                        TRUE~0)
+          +case_when(str_detect(gestLim, "[*]")~-1, #exception:fetal abnormality
+                                        TRUE~0)
+          + case_when(str_detect(gestLim, "[Ω]")~-1, #exception:patient's phys health
+                                       TRUE~0))  %>% # if no special characters, add zero to keep value
+   
+                                       
+   mutate(pbBanI = pbBanI+case_when(str_detect(pbBan, "[▼]")~0.5,
+                                    TRUE~0)) %>%  #law not in effect
+   
+   mutate(pubFundLimI = pubFundLimI+case_when(str_detect(pubFundLim, "[ϴ]")~1, #against court order
+                                              str_detect(pubFundLim, "[*]")~-0.5, #exception:patient's phys health
+                                              TRUE~0)
+                                    + case_when(str_detect(pubFundLim, "[Ω]")~-0.5, #exception:fetal abnormality
+                                       TRUE~0)) %>% 
+   
+   mutate(parentI = parentI+case_when(str_detect(parent, "[▼]")~0.25, #law not in effect
+                                      str_detect(parent, "[ξ]")~-0.5, #may be waived
+                                      str_detect(parent, "[β]")~-0.5, #under age 16
+                                      TRUE~0)) %>% 
+
+   mutate(twoTripsI = twoTripsI+case_when(str_detect(twoTrips, "[▼]")~0.25,
+                                          TRUE~0))
+   
+```
+
+
+```{r}
+## save modified index with adjustment values
+
+write_csv(lawIndexM, here("code/data/LawIndex2_PR.csv"))
+```
+
+## Create Index
+
+Group variables into categories
+1. Gestational Limits
+2. Funding
+   - Public funding (all)
+   - Public funding limited
+   - Private insurance limited
+3. Medical Regulations
+   - Second Physician (if at)
+   - Partial Birth Ban
+4. Personal Restrictions
+   - Parental involvement
+   - In-person counseling req. two trips to clinic
+   
+```{r}
+indexActive <- lawIndexM[-c(1:9)] # select only indexed variables, take out states b/c character 
+
+
+# rescale columns of a dataframe to be 0 to 1 in R tidyverse
+
+# define rescale function
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+
+for(i in seq_along(indexActive)) { #iterate over columns
+   indexActive[[i]] <- rescale01(indexActive[[i]])
+}
+
+row.names(indexActive) <- lawIndexM %>% pull(state)
+```
+
+
+```{r}
+# add columns for each category
+
+indexActive <- indexActive %>%
+   mutate(funding= pubFundAllI + pubFundLimI + privLimI,
+          medical= twoPhysI + pbBanI,
+          personal= parentI + twoTripsI) %>%
+   select(gestational = gestLimI, funding, medical, personal)
+
+# rescale between 0 and 1
+
+for(i in seq_along(indexActive)) { #iterate over columns
+   indexActive[[i]] <- rescale01(indexActive[[i]])
+}
+
+# include state names 
+indexActive <- indexActive %>% 
+   mutate(state_name = pull(lawIndexM, state))
+
+```
+
+```{r}
+# create summary column
+
+indexFinal <- indexActive %>%
+   filter(!state_name %in% c("AK", "HI", "DC")) %>% # remove states
+   mutate(overall = gestational + funding + medical + personal) %>%
+   arrange(desc(overall))
+   
+indexFinal %>%
+   ggplot(aes(x= overall)) +
+   geom_histogram() 
+
+# summary stats
+indexFinal %>%
+   group_by(NULL) %>%
+   summarise(mean= mean(overall),
+             sd= sd(overall),
+             count= n()
+             )
+
+# save final index
+write_csv(indexFinal, here("code/data/lawIndex.csv"))
