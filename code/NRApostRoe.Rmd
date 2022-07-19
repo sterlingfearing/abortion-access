@@ -19,6 +19,7 @@ library(sf)
 library(tmap)
 library(units)
 library(tidyverse)
+library(here)
 
 ```
 
@@ -26,10 +27,10 @@ library(tidyverse)
 # load data
 
 # ANSIRH 2020 abortion clinic addresses (geocoded)
-clinicsSF <- st_read("code/data/clinicPoints.shp")
+clinicsSF <- st_read(here("code/data/clinicPoints.shp"))
 
 # US Census tract boundaries
-counties <- st_read("code/data/countyLines.shp")
+counties <- st_read(here("code/data/countyLines.shp"))
 ```
 
 
@@ -102,19 +103,19 @@ tm_shape(minDistSf) +
 ```{r}
 # save data as csv
 
-write_csv(minDistSf, "code/data/NRApostRoe.csv")
+write_csv(minDistSf, here("code/data/NRApostRoe.csv"))
 
 # save data as shp
 
-write_sf(minDistSf, "code/data/NRApostRoe.shp")
+write_sf(minDistSf, here("code/data/NRApostRoe.shp"))
 ```
 
 ```{r}
 # join NRApostRoe and NRAcounty
 
 # load files
-postRoe <- read_csv("code/data/NRApostRoe.csv")
-preRoe <- st_read("code/data/NRAcounty.shp")
+postRoe <- read_csv(here("code/data/NRApostRoe.csv"))
+preRoe <- st_read(here("code/data/NRAcounty.shp"))
 
 # join
 NRAjoin <- full_join(preRoe, postRoe, by= "GEOID")
@@ -132,9 +133,14 @@ NRA2 <- NRA %>%
          minDist_postRoe = "minDist_mi.y", 
          geometry = "geometry.x")
 
+# calculate change in miles 
+NRA3 <- NRA2 %>%
+  mutate(minDist_change = minDist_postRoe-minDist_Roe)
+
 # save file
 
-write_sf(NRA2, "code/data/compareNRA.shp")
+write_sf(NRA3, here("code/data/compareNRA.shp"))
+write_csv(NRA3, here("code/data/compareNRA.csv"))
 ```
 
 
