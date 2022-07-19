@@ -29,8 +29,94 @@ library(sf)
 ```{r}
 # load data
 
-# Nearest Resource Analysis
-NRAraw <- read_csv(here("code/data/compareNRA.shp"))
+##County Variables: 
 
+# Nearest Resource Analysis
+NRAraw <- st_read(here("code/data/compareNRA.shp")) # includes county geometry
+
+# Estimated demand
+demandRaw <- read_csv(here("code/data/demand2.csv"))
+
+# Census Data
+censusRaw <- read_csv(here("code/data/censusDataCounty.csv"))
+
+
+## State Variables: 
+
+# Law Index (pre vs. post Dobbs)
+lawRaw_pre <- read_csv(here("code/data/lawIndex.csv"))
+lawRaw_post <- read_csv(here("code/data/lawI_PR.csv"))
+
+# Political Party
+partyRaw <- read_csv(here("code/data/stateParty.csv"))
+
+
+```
+
+
+```{r}
+# join county level variables 
+
+# Rename NRA variables 
+
+NRArename <- NRAraw %>%
+  rename(stateFIPS = "sttFIPS",
+         countyFIPS = "cntFIPS",
+         distRoe = "minDst_R",
+         distDobbs = "mnDst_pR",
+         distDiff = "mnDst_c")
+
+# join NRA to Estimated Demand
+
+join_NRA_demand <- left_join(NRArename, demandRaw, by= "GEOID")
+
+# join NRA/Estimated Demand to Census Data
+
+join_county <- left_join(join_NRA_demand, censusRaw, by= "GEOID")
+
+# remove duplicates
+county_var <- join_county %>%
+  select(GEOID, stateFIPS.x, countyFIPS.x, county, state, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, povW100, povW100_199, povW200up, distRoe, distDobbs, distDiff, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, geometry)
+
+# save file 
+
+
+
+```
+
+```{r}
+# join state level variables
+
+# change variable name in Laws to match party (state_name = stateAB)
+lawRaw_pre <- lawRaw_pre %>%
+  rename(stateAB = state_name)
+
+lawRaw_post <- lawRaw_post %>%
+  rename(stateAB = state_name)
+
+# join Political Party to Laws Under Roe
+join_party_law <- left_join(partyRaw, lawRaw_pre, by= "stateAB")
+
+# join Political Party/Laws Under Roe to Laws Under Dobbs
+join_state <- left_join(join_party_law, lawRaw_post, by= "stateAB")
+
+# rename variables
+join_state_rename <- join_state %>%
+  rename(gestRoe = gestational.x,
+         fundRoe = funding.x,
+         medRoe = medical.x,
+         persRoe = personal.x,
+         summRoe = overall.x,
+         gestDobb = gestational.y,
+         fundDobb = funding.y,
+         medDobb = medical.y,
+         persDobb = personal.y,
+         summDobb = overall.y)
+
+```
+
+```{r}
+
+#
 ```
 
