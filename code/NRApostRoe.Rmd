@@ -1,0 +1,140 @@
+---
+title: "Nearest Resource Analysis (Post-Roe)"
+output: html_document
+date: '2022-07-10'
+---
+
+# Goal: Nearest resource analysis (minimum distance in miles) from county centroid to abortion clinic. Using updated data following overturn of Roe vs. Wade. 
+
+# Goal 2: Join pre and post Roe NRA. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load libraries
+
+library(sf)
+library(tmap)
+library(units)
+library(tidyverse)
+
+```
+
+```{r}
+# load data
+
+# ANSIRH 2020 abortion clinic addresses (geocoded)
+clinicsSF <- st_read("code/data/clinicPoints.shp")
+
+# US Census tract boundaries
+counties <- st_read("code/data/countyLines.shp")
+```
+
+
+```{r}
+# remove clinics in states where abortion is banned
+
+clinicsPR <- clinicsSF %>%
+   filter(!str_detect(state, "AL|AR|LA|MS|MO|OK|SD|TX|WV|WI"))
+```
+
+```{r}
+# change projection to USA Contiguous Lambert Conformal Conic
+
+counties <- st_transform(counties, "+proj=lcc +lat_1=33 +lat_2=45 +lat_0=39 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs")
+
+# calculate centroids 
+countyCentroids <- st_centroid(counties)
+
+
+
+```
+
+
+```{r}
+# save crs for counties to apply to clinic points
+
+newCRS <- st_crs(countyCentroids)
+clinicsPR <- st_transform(clinicsPR, newCRS)
+
+```
+
+```{r}
+# identify the resources closest to centroids to create index
+
+nearestClinic_indexes <- st_nearest_feature(countyCentroids, clinicsPR)
+
+nearestClinic <- clinicsPR[nearestClinic_indexes,]
+```
+
+```{r}
+# calculate distance between nearest resource and county centroid
+
+minDist <- st_distance(countyCentroids, nearestClinic, by_element = TRUE)
+
+# change to miles 
+minDist_mi <- set_units(minDist, "mi")
+
+```
+
+```{r}
+# join min. distance to county data
+
+minDistSf <- cbind(counties, minDist_mi)
+```
+
+```{r}
+# visualize min distance 
+
+tmap_mode("plot")
+
+tm_shape(minDistSf) +
+  tm_polygons("minDist_mi", style = 'quantile', n=5,
+              title = "Minimum Distance (mi)") +
+  tm_layout(main.title = "Minimum Distance from County Centroid\n to Abortion Clinic",
+            main.title.position = "center",
+            main.title.size = 1)
+```
+
+
+```{r}
+# save data as csv
+
+write_csv(minDistSf, "code/data/NRApostRoe.csv")
+
+# save data as shp
+
+write_sf(minDistSf, "code/data/NRApostRoe.shp")
+```
+
+```{r}
+# join NRApostRoe and NRAcounty
+
+# load files
+postRoe <- read_csv("code/data/NRApostRoe.csv")
+preRoe <- st_read("code/data/NRAcounty.shp")
+
+# join
+NRAjoin <- full_join(preRoe, postRoe, by= "GEOID")
+
+# clean
+NRA <- NRAjoin %>%
+  select("GEOID", "stateFIPS.x", "countyFIPS.x", "county.x", "state.x", "minDist_mi.x", "minDist_mi.y", "geometry.x") 
+
+NRA2 <- NRA %>%
+  rename(stateFIPS = "stateFIPS.x", 
+         countyFIPS = "countyFIPS.x", 
+         county = "county.x",
+         state= "state.x",
+         minDist_Roe = "minDist_mi.x", 
+         minDist_postRoe = "minDist_mi.y", 
+         geometry = "geometry.x")
+
+# save file
+
+write_sf(NRA2, "code/data/compareNRA.shp")
+```
+
+
