@@ -48,7 +48,7 @@ join <- join %>%
 ```{r}
 # save table for law index 
 
-write_csv(join, here("code/data/compareLaw"))
+write_csv(join, here("code/data/RvD_law.csv"))
 ```
 
 
