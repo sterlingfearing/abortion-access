@@ -1,0 +1,36 @@
+---
+title: "Data Master"
+output: html_document
+date: '2022-07-19'
+---
+# Goal: Join data for analysis.
+
+Spatial: Clinic location, geo boundaries (state, county)
+Nearest Resource Analysis: Pre vs. Post Dobbs 
+Demand: Age, Race, Income
+Law: Pre vs. Post Dobbs
+Political party: Legislative, governor, and state control 
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load libraries
+
+library(tidyverse)
+library(here)
+library(dplyr)
+library(sf)
+
+```
+
+```{r}
+# load data
+
+# Nearest Resource Analysis
+NRAraw <- read_csv(here("code/data/compareNRA.shp"))
+
+```
+
