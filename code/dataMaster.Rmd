@@ -32,7 +32,7 @@ library(sf)
 ##County Variables: 
 
 # Nearest Resource Analysis
-NRAraw <- st_read(here("code/data/compareNRA.shp")) # includes county geometry
+NRAraw <- read_csv(here("code/data/compareNRA.csv")) 
 
 # Estimated demand
 demandRaw <- read_csv(here("code/data/demand2.csv"))
@@ -60,11 +60,9 @@ partyRaw <- read_csv(here("code/data/stateParty.csv"))
 # Rename NRA variables 
 
 NRArename <- NRAraw %>%
-  rename(stateFIPS = "sttFIPS",
-         countyFIPS = "cntFIPS",
-         distRoe = "minDst_R",
-         distDobbs = "mnDst_pR",
-         distDiff = "mnDst_c")
+  rename(distRoe = "minDist_Roe",
+         distDobb = "minDist_postRoe",
+         distDif = "distChange")
 
 # join NRA to Estimated Demand
 
@@ -77,7 +75,7 @@ join_county <- left_join(join_NRA_demand, censusRaw, by= "GEOID")
 # remove duplicates
 
 countyData <- join_county %>%
-  select(GEOID, stateFIPS.x, countyFIPS.x, county, state, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, distRoe, distDobbs, distDiff, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, geometry) %>%
+  select("GEOID", "stateFIPS.x", "countyFIPS.x", "county", "state", "popTot", "age15_49", "whiteP", "blackP", "amIndP", "asianP", "pacIsP", "hispP", "otherP", "povPerc", "pciE", "distRoe", "distDobb", "distDif", "ageD", "whiteD", "blackD", "asianD", "hispD", "raceD", "p100D", "p100_199D", "p200D", "incomeD", "totalD", "geometry") %>%
   rename(stateFIPS = "stateFIPS.x",
          countyFIPS = "countyFIPS.x")
 
@@ -140,7 +138,7 @@ join_state_county <- left_join(countyData, join_state_rename, by= "stateFIPS", k
 # remove repeating variables
 
 dataComplete <- join_state_county %>%
-  select(GEOID, stateFIPS, countyFIPS, county, state.x, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, distRoe, distDobbs, distDiff, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, legCon, govCon, stateCon, gestRoe, fundRoe, medRoe, persRoe, summRoe, gestDobb, fundDobb, medDobb, persDobb, summDobb, geometry) %>%
+  select(GEOID, stateFIPS, countyFIPS, county, state.x, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, distRoe, distDobb, distDif, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, legCon, govCon, stateCon, gestRoe, fundRoe, medRoe, persRoe, summRoe, gestDobb, fundDobb, medDobb, persDobb, summDobb, geometry) %>%
   rename(state= "state.x")
 
 ```
