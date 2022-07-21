@@ -46,7 +46,7 @@ tm_shape(clinicsSF) +
 # remove clinics in states where abortion is banned
 
 clinicsPR <- clinicsSF %>%
-   filter(!str_detect(state, "AL|AR|MS|MO|OK|SD|TX|WI|ID|ND|WY"))
+   filter(!str_detect(state, "AL|AR|MS|MO|OK|SD|TX|WI|ID|ND|TN|WY"))
 ```
 
 ```{r}
@@ -125,6 +125,10 @@ write_csv(minDistSf, here("code/data/NRApostRoe.csv"))
 # save data as shp
 
 write_sf(minDistSf, here("code/data/NRApostRoe.shp"))
+
+# save points with CSR 
+
+write_sf(clinicsPR, here("code/data/clinicsDobbs.shp"))
 ```
 
 ```{r}
