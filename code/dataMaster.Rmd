@@ -52,6 +52,13 @@ partyRaw <- read_csv(here("code/data/stateParty.csv"))
 
 
 ```
+```{r}
+# reduce # of decimal places in dstChange column
+# round to 10 decimal places 
+
+NRAraw$dstChngS <- round(NRAraw$dstChng, digit= 5)
+  
+```
 
 
 ```{r}
@@ -64,7 +71,8 @@ NRArename <- NRAraw %>%
          countyFIPS = "cntFIPS",
          distRoe = "minDst_R",
          distDobb = "mnDst_pR",
-         distDif = "dstChng")
+         distDif = "dstChng",
+         distDifS = "dstChngS")
 
 # join NRA to Estimated Demand
 
