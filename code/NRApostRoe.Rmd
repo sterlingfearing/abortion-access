@@ -151,13 +151,12 @@ NRA2 <- NRA %>%
          geometry = "geometry.x")
 
 # calculate change in miles 
-NRA3 <- NRA2 %>%
-  mutate(minDist_change = minDist_postRoe-minDist_Roe)
+NRA2$distChange <- NRA2$minDist_postRoe - NRA2$minDist_Roe
 
 # save file
 
-write_sf(NRA3, here("code/data/compareNRA.shp"))
-write_csv(NRA3, here("code/data/compareNRA.csv"))
+write_sf(NRA2, here("code/data/compareNRA.shp"))
+write_csv(NRA2, here("code/data/compareNRA.csv"))
 ```
 
 
