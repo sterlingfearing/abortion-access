@@ -61,16 +61,16 @@ plot(st_geometry(countyCentroids), add = TRUE, col = "red")
 # save crs for counties to apply to clinic points
 
 newCRS <- st_crs(countyCentroids)
-clinicsSf <- st_transform(clinicsSF, newCRS)
+clinicsLambert <- st_transform(clinicsSF, newCRS)
 
 ```
 
 ```{r}
 # identify the resources closest to centroids to create index
 
-nearestClinic_indexes <- st_nearest_feature(countyCentroids, clinicsSf)
+nearestClinic_indexes <- st_nearest_feature(countyCentroids, clinicsLambert)
 
-nearestClinic <- clinicsSf[nearestClinic_indexes,]
+nearestClinic <- clinicsLambert[nearestClinic_indexes,]
 ```
 
 ```{r}
@@ -116,6 +116,10 @@ write_csv(minDistSf, here("code/data/NRAcounty.csv"))
 # save data as shp
 
 write_sf(minDistSf, here("code/data/NRAcounty.shp"))
+
+# save clinic points with new CRS (Lambert)
+
+write_sf(clinicsLambert, here("code/data/clinicsLambert.shp"))
 ```
 
 
