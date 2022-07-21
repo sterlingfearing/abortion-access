@@ -33,12 +33,29 @@ clinicsSF <- st_read(here("code/data/clinicPoints.shp"))
 counties <- st_read(here("code/data/countyLines.shp"))
 ```
 
+```{r}
+# quick plot to check data
+
+tm_shape(counties) +
+  tm_borders() +
+tm_shape(clinicsSF) +
+  tm_dots(col = "blue", size = 0.2)
+```
 
 ```{r}
 # remove clinics in states where abortion is banned
 
 clinicsPR <- clinicsSF %>%
    filter(!str_detect(state, "AL|AR|MS|MO|OK|SD|TX|WI|ID|ND|WY"))
+```
+
+```{r}
+# quick plot to check data
+
+tm_shape(counties) +
+  tm_borders() +
+tm_shape(clinicsPR) +
+  tm_dots(col = "blue", size = 0.2)
 ```
 
 ```{r}
