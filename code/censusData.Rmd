@@ -96,13 +96,16 @@ ACSdata1 <- ACSdata %>%
   mutate(age15_49 = age15_17 + age18_19 + age20 + age21 + age22_24 + age25_29 + age30_34 + age35_39 + age40_44 + age45_49)
 
 ```
-```
 
 ```{r}
 # save as csv
 
-write_csv(ACSdata1,"code/data/ACSdata(noRio).csv")
+write_csv(ACSdata1, here("code/data/ACSdata(noRio).csv"))
 
+# income estimates for Rio Arriba, NM calculated in Numbers and saved as ACSdata.csv
+# Used in demand2.Rmd
 ```
+
+
 
 
