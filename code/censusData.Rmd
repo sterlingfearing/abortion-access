@@ -60,6 +60,57 @@ head(pVarNames)
 
 ```
 
+```{r}
+# Population for females (ages 15-49) overestimated using B01001
+# Try variables in S0101 
+# combines groups (15-17 and 18-19) into 15-19, will need to est. demand
+
+## identify variables from S0101 : AGE & SEX table
+#  1. Female  : Age 15-19  S0101_C05_005 Estimate!!Total!!Female!!15 to 19 years
+#  2. Female  : Age 20-24  S0101_C05_006 Estimate!!Total!!Female!!20 to 24 years
+#  4. Female  : Age 25-29  S0101_C05_007 Estimate!!Total!!Female!!25 to 29 years
+#  5. Female  : Age 30-34  S0101_C05_008 Estimate!!Total!!Female!!30 to 34 years
+#  6. Female  : Age 35-39  S0101_C05_009 Estimate!!Total!!Female!!35 to 39 years
+#  7. Female  : Age 40-44  S0101_C05_010 Estimate!!Total!!Female!!40 to 44 years
+#  8. Female  : Age 45-49  S0101_C05_011 Estimate!!Total!!Female!!45 to 49 years
+#  9. Female  : Age 0-dead S0101_C05_001 Estimate!!Female!!Total population
+
+
+popS <- get_acs(geography = 'county', variables= c(age15_19 = "S0101_C05_005",
+                                                   age20_24 = "S0101_C05_006",
+                                                   age25_29 = "S0101_C05_007",
+                                                   age30_34 = "S0101_C05_008",
+                                                   age23_39 = "S0101_C05_009",
+                                                   age40_44 = "S0101_C05_010",
+                                                   age45_49 = "S0101_C05_011",
+                                                   allAges = "S0101_C05_001"))
+```
+
+```{r}
+# tidy
+popS <- popS %>%
+  select(-moe) %>%
+  pivot_wider(names_from = variable,
+              values_from = estimate) %>%
+  filter(!str_detect(NAME, "Hawaii|Alaska|Puerto Rico"))
+
+# add columns for pop 15_49
+popS <- popS %>%
+  mutate(age15_49 = age15_19 + age20_24 + age25_29 + age30_34 + age23_39 + age40_44 + age45_49)
+
+# check sum of column
+sum(popS$age15_49)
+# sum= 74,053,439
+# about the same as B01001 estimate
+
+# check sum for all ages
+sum(popS$allAges)
+# sum= 164,690,617
+# under-estimation from world bank data
+# total female pop= 167,669,677
+
+```
+
 
 ```{r}
 # load variables
@@ -92,15 +143,18 @@ ACSdata1 <- ACSdata %>%
               values_from = estimate) %>%
   filter(!str_detect(NAME, "Hawaii|Alaska|Puerto Rico")) %>%
   mutate(age20_24 = age20 + age21 + age22_24,
-         age40_49 = age40_44 + age45_49)  %>% #create columns that match age categories
-  mutate(age15_49 = age15_17 + age18_19 + age20 + age21 + age22_24 + age25_29 + age30_34 + age35_39 + age40_44 + age45_49)
+         age40_49 = age40_44 + age45_49)  
+
+#create columns that match age categories of demand ratios
+ACSdata2 <- ACSdata1 %>%
+  mutate(age15_49 = age15_17 + age18_19 + age20_24 + age25_29 + age30_34 + age35_39 + age40_49)
 
 ```
 
 ```{r}
 # save as csv
 
-write_csv(ACSdata1, here("code/data/ACSdata(noRio).csv"))
+write_csv(ACSdata2, here("code/data/ACSdata(noRio).csv"))
 
 # income estimates for Rio Arriba, NM calculated in Numbers and saved as ACSdata.csv
 # Used in demand2.Rmd
