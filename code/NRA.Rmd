@@ -108,14 +108,14 @@ tm_shape(minDistSf) +
 # saved as NRA_noGeo.csv in "code/data"
 
 ```{r}
+# save data as shp
+
+write_sf(minDistSf, here("code/data/NRAcounty.shp"))
+
 # save data as csv
 
 write_csv(minDistSf, here("code/data/NRAcounty.csv"))
 
-
-# save data as shp
-
-write_sf(minDistSf, here("code/data/NRAcounty.shp"))
 
 # save clinic points with new CRS (Lambert)
 
