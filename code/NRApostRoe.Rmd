@@ -38,7 +38,7 @@ counties <- st_read(here("code/data/countyLines.shp"))
 # remove clinics in states where abortion is banned
 
 clinicsPR <- clinicsSF %>%
-   filter(!str_detect(state, "AL|AR|LA|MS|MO|OK|SD|TX|WV|WI"))
+   filter(!str_detect(state, "AL|AR|MS|MO|OK|SD|TX|WI|ID|ND|WY"))
 ```
 
 ```{r}

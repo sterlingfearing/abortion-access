@@ -19,6 +19,7 @@ library(sf)
 library(tmap)
 library(units)
 library(tidyverse)
+library(here)
 
 ```
 
@@ -109,12 +110,12 @@ tm_shape(minDistSf) +
 ```{r}
 # save data as csv
 
-write_csv(minDistSf, "abortion-access/code/data/NRAcounty.csv")
+write_csv(minDistSf, here("code/data/NRAcounty.csv"))
 
 
 # save data as shp
 
-write_sf(minDistSf, "code/data/NRAcounty.shp")
+write_sf(minDistSf, here("code/data/NRAcounty.shp"))
 ```
 
 
