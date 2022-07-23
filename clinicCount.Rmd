@@ -1,0 +1,48 @@
+---
+title: "Count Clinics"
+output: html_document
+date: '2022-07-23'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+```{r}
+# load files from QGIS with NUMPOINTS
+
+roeQ <-read_csv(here("code/data/countRoe.csv"))
+dobbsQ <- read_csv(here("code/data/countDobbs.csv"))
+  
+```
+
+```{r}
+# rename NUMPOINTS
+
+roeQ <- roeQ %>%
+  select(GEOID, NUMPOINTS) %>%
+  rename(clinRoe= "NUMPOINTS")
+
+dobbsQ <- dobbsQ %>%
+  select(GEOID, NUMPOINTS) %>%
+  rename(clinDob= "NUMPOINTS")
+```
+
+```{r}
+# join
+
+numClinics <- full_join(roeQ, dobbsQ, by="GEOID")
+```
+
+```{r}
+# save 
+
+write_csv(numClinics, here("code/data/numClinics.csv"))
+```
+
+
