@@ -40,6 +40,10 @@ demandRaw <- read_csv(here("code/data/demand2.csv"))
 # Census Data
 censusRaw <- read_csv(here("code/data/censusDataCounty.csv"))
 
+# Number of clinics
+
+clinicCount <- read_csv(here("code/data/numClinics.csv"))
+
 
 ## State Variables: 
 
@@ -51,6 +55,8 @@ lawRaw_post <- read_csv(here("code/data/lawI_PR.csv"))
 partyRaw <- read_csv(here("code/data/stateParty.csv"))
 
 
+
+
 ```
 
 ```{r}
@@ -59,6 +65,15 @@ partyRaw <- read_csv(here("code/data/stateParty.csv"))
 
 NRAraw$dstChngS <- round(NRAraw$dstChng, digit= 5)
   
+```
+
+```{r}
+# add 1 to number of clinics in each county so proportions can be created
+# 1=0
+
+clinicCount$clinRoe <- clinicCount$clinRoe+1
+
+clinicCount$clinDob <- clinicCount$clinDob+1
 ```
 
 
@@ -81,12 +96,16 @@ join_NRA_demand <- left_join(NRArename, demandRaw, by= "GEOID")
 
 # join NRA/Estimated Demand to Census Data
 
-join_county <- left_join(join_NRA_demand, censusRaw, by= "GEOID")
+join_census <- left_join(join_NRA_demand, censusRaw, by= "GEOID")
+
+# join above to clinicCount
+
+join_county <- left_join(join_census, clinicCount, by= "GEOID")
 
 # remove duplicates
 
 countyData <- join_county %>%
-  select("GEOID", "stateFIPS.x", "countyFIPS.x", "county", "state", "popTot", "age15_49", "whiteP", "blackP", "amIndP", "asianP", "pacIsP", "hispP", "otherP", "povPerc", "pciE", "distRoe", "distDobb", "distDif", "distDifS", "ageD", "whiteD", "blackD", "asianD", "hispD", "raceD", "p100D", "p100_199D", "p200D", "incomeD", "totalD", "geometry") %>%
+  select("GEOID", "stateFIPS.x", "countyFIPS.x", "county", "state", "popTot", "age15_49", "whiteP", "blackP", "amIndP", "asianP", "pacIsP", "hispP", "otherP", "povPerc", "pciE", "distRoe", "distDobb", "distDif", "distDifS", "ageD", "whiteD", "blackD", "asianD", "hispD", "raceD", "p100D", "p100_199D", "p200D", "incomeD", "totalD", "clinRoe", "clinDob", "geometry") %>%
   rename(stateFIPS = "stateFIPS.x",
          countyFIPS = "countyFIPS.x")
 
@@ -151,7 +170,7 @@ join_state_county <- left_join(countyData, join_state_rename, by= "stateFIPS", k
 # remove repeating variables
 
 dataComplete <- join_state_county %>%
-  select(GEOID, stateFIPS, countyFIPS, county, state.x, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, distRoe, distDobb, distDif, distDifS, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, legCon, govCon, stateCon, gestRoe, fundRoe, medRoe, persRoe, summRoe, gestDobb, fundDobb, medDobb, persDobb, summDobb, geometry) %>%
+  select(GEOID, stateFIPS, countyFIPS, county, state.x, popTot, age15_49, whiteP, blackP, amIndP, asianP, pacIsP, hispP, otherP, povPerc, pciE, clinRoe, clinDob, distRoe, distDobb, distDif, distDifS, ageD, whiteD, blackD, asianD, hispD, raceD, p100D, p100_199D, p200D, incomeD, totalD, legCon, govCon, stateCon, gestRoe, fundRoe, medRoe, persRoe, summRoe, gestDobb, fundDobb, medDobb, persDobb, summDobb, geometry) %>%
   rename(state= "state.x")
 
 ```
