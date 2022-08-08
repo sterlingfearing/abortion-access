@@ -237,6 +237,28 @@ indexFinal %>%
 write_csv(indexFinal, here("code/data/lawIndex.csv"))
 
 
+
+```
+
+
+```{r}
+# weight gestational limit
+
+adjustIndex <- read_csv(here("code/data/lawIndex.csv"))
+
+adjustIndex$gestational <- adjustIndex$gestational*2
+
+# create new summ column
+
+newSumm <- adjustIndex %>%
+  mutate(overall = gestational + funding + medical + personal)
+
+# save adjusted csv
+
+write_csv(newSumm, here("code/data/lawIndexRoe.csv"))
+```
+
+```{r}
 # add state party
 
 stateParty <- read_csv("data/stateParty.csv")
