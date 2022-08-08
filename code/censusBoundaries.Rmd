@@ -57,9 +57,9 @@ stateLines <- get_acs(geography = 'state', variables = c(anyvar = "B01001_030"),
 stateLines <- stateLines %>%
   rename(stateFIPS = GEOID)
   
-# remove AK, HI, PR
+# remove AK, HI, PR, DC
 stateLines <- stateLines %>%
-  filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15")
+  filter(stateFIPS != "02" & stateFIPS != "72" & stateFIPS != "15" & stateFIPS != "11")
 
 # select variables of interest
 stateLines <- stateLines %>%
