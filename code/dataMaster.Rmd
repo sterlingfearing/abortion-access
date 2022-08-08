@@ -48,7 +48,7 @@ clinicCount <- read_csv(here("code/data/numClinics.csv"))
 ## State Variables: 
 
 # Law Index (pre vs. post Dobbs)
-lawRaw_pre <- read_csv(here("code/data/lawIndex.csv"))
+lawRaw_pre <- read_csv(here("code/data/lawIndexRoe.csv"))
 lawRaw_post <- read_csv(here("code/data/lawI_PR.csv"))
 
 # Political Party
