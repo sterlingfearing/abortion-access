@@ -190,8 +190,9 @@ row.names(indexActive) <- lawIndexM %>% pull(state)
 indexActive <- indexActive %>%
    mutate(funding= pubFundAllI + pubFundLimI + privLimI,
           medical= twoPhysI + pbBanI,
-          personal= parentI + twoTripsI) %>%
-   select(gestational = gestLimI, funding, medical, personal)
+          personal= parentI + twoTripsI,
+          gestational = gestLimI) %>%
+   select(gestational, funding, medical, personal)
 
 # rescale between 0 and 1
 
@@ -200,15 +201,23 @@ for(i in seq_along(indexActive)) { #iterate over columns
 }
 
 # include state names 
-indexActive <- indexActive %>% 
+index <- indexActive %>% 
    mutate(state_name = pull(lawIndexM, state))
+
+```
+
+```{r}
+
+# weight gestational limit higher b/c restriction can override other laws
+
+index$gestational <- index$gestational*2
 
 ```
 
 ```{r}
 # create summary column
 
-indexFinal <- indexActive %>%
+indexFinal <- index %>%
    filter(!state_name %in% c("AK", "HI", "DC")) %>% # remove states
    mutate(overall = gestational + funding + medical + personal) %>%
    arrange(desc(overall))
