@@ -14,13 +14,14 @@ knitr::opts_chunk$set(echo = TRUE)
 library(purrr)
 library(tidyverse)
 library(here)
+library(sf)
 ```
 
 ```{r}
 
 # Join pre vs post Dobbs law
 
-pre_Dobbs <- read_csv(here("code/data/lawIndex.csv"))
+pre_Dobbs <- read_csv(here("code/data/lawIndexRoe.csv"))
 post_Dobbs <- read_csv(here("code/data/lawI_PR.csv"))
 
 ```
@@ -51,4 +52,41 @@ join <- join %>%
 write_csv(join, here("code/data/RvD_law.csv"))
 ```
 
+```{r}
+# add state geometry 
+
+stateLines <- st_read(here("code/data/stateLines.shp"))
+
+# add party table (include state FIPS and state AB for join)
+
+stateParty <- read_csv(here("code/data/stateParty.csv"))
+```
+
+
+```{r}
+# join law and state party
+
+renameState <- join %>%
+  rename(stateAB = state_name)
+  
+lawParty <- full_join(renameState, stateParty, by= "stateAB" ) 
+
+lawSelect <- lawParty %>%
+  select(stateFIPS, stateAB, state, funding, medical, personal, gestRoe, gestDobb, lawRoe, lawDobb, legCon, govCon, stateCon)
+
+# save csv with adjusted gest values and law summs
+
+write_csv(lawSelect, here("code/data/compareLaw_adjGestVals.csv"))
+```
+
+```{r}
+# join with geo
+
+lawGeo <- left_join(lawSelect, stateLines, by= "stateFIPS")
+
+# save as shapefile
+
+st_write(lawGeo, here("code/data/comLaw_adjGestVals.shp"))
+
+```
 
